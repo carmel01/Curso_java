@@ -39,6 +39,7 @@ class UsuarioJPATest {
 		entityManager = entityManagerFactory.createEntityManager();
 	}
 
+	
 	@AfterEach
 	void after() {
 		entityManagerFactory.close();
