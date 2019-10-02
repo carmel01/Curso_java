@@ -1,21 +1,31 @@
 package co.edu.usbcali.bank.jpa;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import co.edu.usbcali.bank.domain.Cliente;
 import co.edu.usbcali.bank.domain.TipoDocumento;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ClienteJPATest {
-
 	private final static long clieId = 4560L;
 	EntityManagerFactory entityManagerFactory = null;
 	EntityManager entityManager = null;
@@ -33,6 +43,7 @@ class ClienteJPATest {
 	}
 
 	@Test
+	@Order(1)
 	@DisplayName("save")
 	void test() {
 		assertNotNull(entityManager, "El entityManager es nulo");
@@ -58,6 +69,7 @@ class ClienteJPATest {
 	}
 
 	@Test
+	@Order(2)
 	@DisplayName("findById")
 	void btest() {
 		assertNotNull(entityManager, "El entityManager es nulo");
@@ -67,6 +79,7 @@ class ClienteJPATest {
 	}
 
 	@Test
+	@Order(3)
 	@DisplayName("update")
 	void ctest() {
 		assertNotNull(entityManager, "El entityManager es nulo");
@@ -80,6 +93,7 @@ class ClienteJPATest {
 	}
 
 	@Test
+	@Order(4)
 	@DisplayName("delete")
 	void dtest() {
 		assertNotNull(entityManager, "El entityManager es nulo");
@@ -90,5 +104,27 @@ class ClienteJPATest {
 		entityManager.remove(cliente);
 		entityManager.getTransaction().commit();
 	}
+
+	private final static Logger log = LoggerFactory.getLogger(ClienteJPATest.class);
+
+	@Test
+	@Order(5)
+	@DisplayName("findAll")
+	void eTest() {
+		assertNotNull(entityManager, "El entityManager es nulo");
+		String jpql="SELECT cli FROM Cliente cli";
+		Query query=entityManager.createQuery(jpql);
+		List<Cliente> clientes=query.getResultList();
+		assertNotNull(clientes);
+		assertFalse(clientes.isEmpty());
+		
+		for (Cliente cliente : clientes) {
+			log.info(cliente.getNombre());			
+		}
+		
+		clientes.forEach(cliente->{
+			log.info(cliente.getClieId().toString());
+			});
+}
 
 }
