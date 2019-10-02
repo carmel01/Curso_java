@@ -15,6 +15,7 @@ class ClienteDAOTest {
 	@Autowired
 	private ClienteDAO clienteDAO;
 
+	 
 	@Test
 	void test() {
 		assertNotNull(clienteDAO, "El cliente DAO es Nulo");
