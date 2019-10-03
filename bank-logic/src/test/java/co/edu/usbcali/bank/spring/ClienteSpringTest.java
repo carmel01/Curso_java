@@ -2,14 +2,18 @@ package co.edu.usbcali.bank.spring;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -18,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.usbcali.bank.domain.Cliente;
 import co.edu.usbcali.bank.domain.TipoDocumento;
+import co.edu.usbcali.bank.domain.Usuario;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration("/applicationContext.xml")
@@ -25,6 +30,8 @@ import co.edu.usbcali.bank.domain.TipoDocumento;
 class ClienteSpringTest {
 
 	private final static long clieId = 4560L;
+	
+	private final static Logger log = LoggerFactory.getLogger(ClienteSpringTest.class);
 
 	@PersistenceContext
 	EntityManager entityManager;
@@ -55,7 +62,7 @@ class ClienteSpringTest {
 
 	@Test
 	@DisplayName("findById")
-	@Transactional(readOnly = true)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	void btest() {
 		assertNotNull(entityManager, "El entityManager es nulo");
 		Cliente cliente = entityManager.find(Cliente.class, clieId);
@@ -86,5 +93,22 @@ class ClienteSpringTest {
 		assertNotNull(cliente, "El cliente con id " + clieId + " no existe");
 
 		entityManager.remove(cliente);
+	}
+	
+	@Test
+	@DisplayName("findAll")
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	void etest() {
+		assertNotNull(entityManager, "El entityManager es nulo");		
+		Query query=entityManager.createQuery("FROM Cliente");
+		List<Cliente> clientes = query.getResultList();
+		
+		assertNotNull(clientes);
+
+		assertFalse(clientes.isEmpty());
+
+		clientes.forEach(clie -> {
+			log.info(clie.getNombre());
+		});
 	}
 }
