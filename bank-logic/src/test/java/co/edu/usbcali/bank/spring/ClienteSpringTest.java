@@ -2,18 +2,14 @@ package co.edu.usbcali.bank.spring;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -81,7 +77,6 @@ class ClienteSpringTest {
 
 	}
 
-	
 	@Test
 	@DisplayName("delete")
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
