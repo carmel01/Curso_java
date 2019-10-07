@@ -55,7 +55,7 @@ class ClienteJPATest {
 		cliente.setEmail("j@gmail.com");
 		cliente.setDireccion("uni san buenaventura");
 		cliente.setNombre("Fiayiño");
-		cliente.setTelefono("321");
+		cliente.setTelefono("32756756751");
 
 		TipoDocumento tipoDocumento = entityManager.find(TipoDocumento.class, 1L);
 		assertNotNull(tipoDocumento, "Tipo documento no existe");

@@ -49,7 +49,7 @@ class ClienteSpringTest {
 		cliente.setEmail("j@gmail.com");
 		cliente.setDireccion("uni san buenaventura");
 		cliente.setNombre("Fiayiño");
-		cliente.setTelefono("321");
+		cliente.setTelefono("321675887");
 
 		TipoDocumento tipoDocumento = entityManager.find(TipoDocumento.class, 1L);
 		assertNotNull(tipoDocumento, "Tipo documento no existe");

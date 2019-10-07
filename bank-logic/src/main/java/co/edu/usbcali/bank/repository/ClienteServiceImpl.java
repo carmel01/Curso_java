@@ -59,7 +59,7 @@ public class ClienteServiceImpl implements ClienteService {
 
 		 //clienteRepository.findById(cliente.getClieId()).ifPresent(c -> { throw new RuntimeException("El cliente es nulo");});
 		
-		clienteRepository.findById(cliente.getClieId()).orElseThrow(() -> new Exception("El cliente es nulo"));
+		//clienteRepository.findById(cliente.getClieId()).orElseThrow(() -> new Exception("El cliente es nulo"));
       
 
 		if (clienteRepository.findById(cliente.getClieId()).isPresent() == true) {

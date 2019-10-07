@@ -48,7 +48,7 @@ class ClienteRepositoryTest {
 		cliente.setEmail("j@gmail.com");
 		cliente.setDireccion("uni san buenaventura");
 		cliente.setNombre("Fiayiño");
-		cliente.setTelefono("321");
+		cliente.setTelefono("3284547651");
 		assertTrue(documentoRepository.findById(1L).isPresent(), "el tipo de documento no existe");
 		cliente.setTipoDocumento(documentoRepository.findById(1L).get());
 

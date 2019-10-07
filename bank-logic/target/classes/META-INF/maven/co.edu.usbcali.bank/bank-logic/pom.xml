@@ -30,7 +30,6 @@
 		<!-- Spring -->
 
 
-
 		<!-- Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
