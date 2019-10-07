@@ -9,7 +9,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.junit.jupiter.api.DisplayName;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -22,93 +21,103 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.usbcali.bank.domain.Cliente;
 import co.edu.usbcali.bank.domain.TipoDocumento;
-import co.edu.usbcali.bank.domain.Usuario;
+
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration("/applicationContext.xml")
-@Rollback(value = false)
+@Rollback(false)
 class ClienteSpringTest {
 
-	private final static long clieId = 4560L;
+	private final static Long clieId = 4560L;
+	private final static Logger log=LoggerFactory.getLogger(ClienteSpringTest.class);
 	
-	private final static Logger log = LoggerFactory.getLogger(ClienteSpringTest.class);
-
+	
 	@PersistenceContext
 	EntityManager entityManager;
 
 	@Test
-	@DisplayName("save")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	void test() {
-		assertNotNull(entityManager, "El entityManager es nulo");
-		Cliente cliente = entityManager.find(Cliente.class, clieId);
-		assertNull(cliente, "El cliente con id " + clieId + " ya existe");
+	@DisplayName("insert")
+	@Transactional(readOnly = false,propagation = Propagation.REQUIRED)
+	void aTest() {
 
+		assertNotNull(entityManager, "EL entityManager NULL");
+		Cliente cliente = entityManager.find(Cliente.class, clieId);
+		assertNull(cliente, "Cliente con Id:" + clieId + " ya existe");
 		cliente = new Cliente();
 		cliente.setActivo("S");
 		cliente.setClieId(clieId);
-		cliente.setDireccion("Avenida siempre viva 123");
-		cliente.setEmail("HomerJSimpson@gmail.com");
-		cliente.setNombre("Homer Jay Simpson");
-		cliente.setTelefono("555 555 555");
+		cliente.setEmail("j@gmail.com");
+		cliente.setDireccion("uni san buenaventura");
+		cliente.setNombre("Fiayiño");
+		cliente.setTelefono("321");
 
 		TipoDocumento tipoDocumento = entityManager.find(TipoDocumento.class, 1L);
-		assertNotNull(tipoDocumento, "El tipo de documento con id: 1 ya existe");
+		assertNotNull(tipoDocumento, "Tipo documento no existe");
 		cliente.setTipoDocumento(tipoDocumento);
-
-		entityManager.persist(cliente);
-
+	    entityManager.persist(cliente);
+		
+		
 	}
-
+	
+	
 	@Test
-	@DisplayName("findById")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	void btest() {
-		assertNotNull(entityManager, "El entityManager es nulo");
+	@DisplayName("finById")
+	void bTest() {
+
+		assertNotNull(entityManager, "EL entityManager NULL");
 		Cliente cliente = entityManager.find(Cliente.class, clieId);
-		assertNotNull(cliente, "El cliente con id " + clieId + " no existe");
+		assertNotNull(cliente, "Cliente con Id:" + clieId + " No existe");
 
 	}
 
 	@Test
 	@DisplayName("update")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	void ctest() {
-		assertNotNull(entityManager, "El entityManager es nulo");
+	@Transactional(readOnly = false,propagation = Propagation.REQUIRED)
+	void cTest() {
+
+		assertNotNull(entityManager, "EL entityManager NULL");
 		Cliente cliente = entityManager.find(Cliente.class, clieId);
-		assertNotNull(cliente, "El cliente con id " + clieId + " no existe");
-
+		assertNotNull(cliente, "Cliente con Id:" + clieId + " No existe");
 		cliente.setActivo("N");
-
 		entityManager.merge(cliente);
-
+		
 	}
 
 	@Test
 	@DisplayName("delete")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	void dtest() {
-		assertNotNull(entityManager, "El entityManager es nulo");
-		Cliente cliente = entityManager.find(Cliente.class, clieId);
-		assertNotNull(cliente, "El cliente con id " + clieId + " no existe");
+	@Transactional(readOnly = false,propagation = Propagation.REQUIRED)
+	void dTest() {
 
+		assertNotNull(entityManager, "EL entityManager NULL");
+		Cliente cliente = entityManager.find(Cliente.class, clieId);
+		assertNotNull(cliente, "Cliente con Id:" + clieId + " No existe");
 		entityManager.remove(cliente);
+		
 	}
 	
+
+	
+	
 	@Test
-	@DisplayName("findAll")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	void etest() {
-		assertNotNull(entityManager, "El entityManager es nulo");		
-		Query query=entityManager.createQuery("FROM Cliente");
-		List<Cliente> clientes = query.getResultList();
+	@DisplayName("list")
+	@Transactional(readOnly = true)
+	void eTest() {
+
+		assertNotNull(entityManager, "EL entityManager NULL");
+		String jpql= "SELECT cli FROM Cliente cli";
+		Query query= entityManager.createQuery(jpql);
+		List<Cliente> losClientes=query.getResultList();
+		assertNotNull(losClientes);
+		assertFalse(losClientes.isEmpty());
 		
-		assertNotNull(clientes);
-
-		assertFalse(clientes.isEmpty());
-
-		clientes.forEach(clie -> {
-			log.info(clie.getNombre());
-		});
+     	for (Cliente cliente : losClientes) {
+     		log.info(cliente.getNombre());
+			
+		}
+     	
+     	losClientes.forEach(cliente->{
+     		log.info(cliente.getClieId().toString());     		
+     	});
 	}
+
 }

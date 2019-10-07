@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,106 +22,102 @@ import co.edu.usbcali.bank.domain.Cliente;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration("/applicationContext.xml")
-@Rollback(value = false)
+@Rollback(false)
 class ClienteRepositoryTest {
-
-	private final static Long clieId = 4560L;
-
-	private final static Logger log = LoggerFactory.getLogger(ClienteRepositoryTest.class);
 
 	@Autowired
 	ClienteRepository clienteRepository;
-
 	@Autowired
-	TipoDocumentoRepository tipoDocumentoRepository;
+	TipoDocumentoRepository documentoRepository;
+
+	private final static Long clieId = 4560L;
+	private final static Logger log = LoggerFactory.getLogger(ClienteRepositoryTest.class);
 
 	@Test
-	@DisplayName("save")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	void atest() {
+	@DisplayName("insert")
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	void aTest() {
 		assertNotNull(clienteRepository);
-		assertNotNull(tipoDocumentoRepository);
-		assertFalse(clienteRepository.findById(clieId).isPresent(), "El cliente ya existe");
+		assertNotNull(documentoRepository);
+		
+		assertFalse(clienteRepository.findById(clieId).isPresent());
 
 		Cliente cliente = new Cliente();
 		cliente.setActivo("S");
 		cliente.setClieId(clieId);
-		cliente.setDireccion("Avenida siempre viva 123");
-		cliente.setEmail("HomerJSimpson@gmail.com");
-		cliente.setNombre("Homer Jay Simpson");
-		cliente.setTelefono("555 555 555");
-
-		assertTrue(tipoDocumentoRepository.findById(1L).isPresent(), "El tipo de documento no existe");
-		cliente.setTipoDocumento(tipoDocumentoRepository.findById(1L).get());
+		cliente.setEmail("j@gmail.com");
+		cliente.setDireccion("uni san buenaventura");
+		cliente.setNombre("Fiayiño");
+		cliente.setTelefono("321");
+		assertTrue(documentoRepository.findById(1L).isPresent(), "el tipo de documento no existe");
+		cliente.setTipoDocumento(documentoRepository.findById(1L).get());
 
 		clienteRepository.save(cliente);
+
 	}
 
 	@Test
-	@DisplayName("findById")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	void btest() {
-		assertNotNull(clienteRepository, "El clienteRepository es nulo");
-		Optional<Cliente> clienteOptional = clienteRepository.findById(clieId);
-		assertTrue(clienteOptional.isPresent(), "El cliente con id " + clieId + " no existe");
+	@DisplayName("finById")
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	void bTest() {
+
+		assertNotNull(clienteRepository);
+		assertNotNull(documentoRepository);
+		// Optional<Cliente> clienteOptional =clienteRepository.findById(clieId);
+		assertTrue(clienteRepository.findById(clieId).isPresent(),"no existe");
 
 	}
 
 	@Test
 	@DisplayName("update")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	void ctest() {
-		assertNotNull(clienteRepository, "El clienteRepository es nulo");
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	void cTest() {
 
-		Optional<Cliente> clienteOptional = clienteRepository.findById(clieId);
-		assertTrue(clienteOptional.isPresent(), "El cliente con id " + clieId + " no existe");
+		assertNotNull(clienteRepository);
+		assertNotNull(documentoRepository);
+		assertTrue(clienteRepository.findById(clieId).isPresent());
 
-		Cliente cliente = clienteOptional.get();
+		Cliente cliente = clienteRepository.findById(clieId).get();
 		cliente.setActivo("N");
-
 		clienteRepository.save(cliente);
+
 	}
 
 	@Test
 	@DisplayName("delete")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	void dtest() {
-		assertNotNull(clienteRepository, "El clienteRepository es nulo");
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	void dTest() {
 
-		Optional<Cliente> clienteOptional = clienteRepository.findById(clieId);
-		assertTrue(clienteOptional.isPresent(), "El cliente con id " + clieId + " no existe");
-
-		Cliente cliente = clienteOptional.get();
+		assertNotNull(clienteRepository);
+		assertNotNull(documentoRepository);
+		assertTrue(clienteRepository.findById(clieId).isPresent());
+		Cliente cliente = clienteRepository.findById(clieId).get();
 		clienteRepository.delete(cliente);
+
 	}
 
 	@Test
-	@DisplayName("deleteById")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	void etest() {
+	@DisplayName("listAll")
+	@Transactional(readOnly = true)
+	void eTest() {
 
-		assertNotNull(clienteRepository, "El clienteRepository es nulo");
+		assertNotNull(clienteRepository);
+		assertNotNull(documentoRepository);
 
-		// Se crea el cliente para poder borrarlo nuevamente
-		atest();
-		Optional<Cliente> clienteOptional = clienteRepository.findById(clieId);
-		assertTrue(clienteOptional.isPresent(), "El cliente con id " + clieId + " no existe");
+		List<Cliente> losClientes = clienteRepository.findAll();
 
-		clienteRepository.deleteById(clienteOptional.get().getClieId());
-	}
+		assertNotNull(losClientes);
+		assertFalse(losClientes.isEmpty());
 
-	@Test
-	@DisplayName("findAll")
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	void ftest() {
-		assertNotNull(clienteRepository, "El clienteRepository es nulo");
-		List<Cliente> clientes = clienteRepository.findAll();
-		assertNotNull(clientes);
+		for (Cliente cliente : losClientes) {
+			log.info(cliente.getNombre());
 
-		assertFalse(clientes.isEmpty());
+		}
 
-		clientes.forEach(clie -> {
-			log.info(clie.getNombre());
+		losClientes.forEach(t -> {
+			log.info(t.getClieId().toString());
 		});
+
 	}
+
 }

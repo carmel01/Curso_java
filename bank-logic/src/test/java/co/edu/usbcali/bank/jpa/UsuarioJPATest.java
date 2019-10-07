@@ -15,10 +15,7 @@ import javax.persistence.Query;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,107 +24,114 @@ import co.edu.usbcali.bank.domain.TipoDocumento;
 import co.edu.usbcali.bank.domain.TipoUsuario;
 import co.edu.usbcali.bank.domain.Usuario;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UsuarioJPATest {
-	private final static String usu_usuario = "carmel";
+
+	private final static String usu_usuario = "jfiayo";
+	private final static Logger log=LoggerFactory.getLogger(UsuarioJPATest.class);
+	
 	EntityManagerFactory entityManagerFactory = null;
 	EntityManager entityManager = null;
 
 	@BeforeEach
-	void before() {
+	void beforeEach() {
 		entityManagerFactory = Persistence.createEntityManagerFactory("bank-logic");
 		entityManager = entityManagerFactory.createEntityManager();
+
 	}
 
-	
 	@AfterEach
-	void after() {
+	void afterEach() {
 		entityManagerFactory.close();
 		entityManager.close();
+
 	}
 
 	@Test
-	@Order(1)
 	@DisplayName("save")
-	void test() {
-		assertNotNull(entityManager, "El entityManager es nulo");
-		Usuario usuario= entityManager.find(Usuario.class, usu_usuario);
-		assertNull(usuario, "El usuario con id " + usu_usuario + " ya existe");
+	void aTest() {
 
+		assertNotNull(entityManager, "EL entityManager NULL");
+		Usuario usuario= entityManager.find(Usuario.class, usu_usuario);
+		assertNull(usuario, "Usuario con Id:" + usu_usuario + " ya existe");
 		usuario = new Usuario();
 		usuario.setActivo("S");
+		usuario.setClave("jfiayo");
+		usuario.setNombre("Fiayiño");
 		usuario.setUsuUsuario(usu_usuario);
-		usuario.setNombre("Homer Jay Simpson");
-		usuario.setClave("carlitos");
-		usuario.setIdentificacion(new BigDecimal(6734));	
-		
+		usuario.setIdentificacion(new BigDecimal(12345));
 		TipoUsuario tipoUsuario = entityManager.find(TipoUsuario.class, 1L);
-		assertNotNull(tipoUsuario, "El tipo de usuario con id: 1 ya existe");
+		assertNotNull(tipoUsuario, "Tipo usuario no existe");
 		usuario.setTipoUsuario(tipoUsuario);
-
 		entityManager.getTransaction().begin();
 		entityManager.persist(usuario);
 		entityManager.getTransaction().commit();
-
+		
 	}
-
 	@Test
-	@Order(2)
-	@DisplayName("findById")
-	void btest() {
-		assertNotNull(entityManager, "El entityManager es nulo");
+	@DisplayName("finById")
+	void bTest() {
+
+		assertNotNull(entityManager, "EL entityManager NULL");
 		Usuario usuario= entityManager.find(Usuario.class, usu_usuario);
-		assertNotNull(usuario, "El usuario con id " + usu_usuario + " no existe");
+		assertNotNull(usuario, "Usiario con Id:" + usu_usuario + " No existe");
 
 	}
 
 	@Test
-	@Order(3)
 	@DisplayName("update")
-	void ctest() {
-		assertNotNull(entityManager, "El entityManager es nulo");
-		Usuario usuario = entityManager.find(Usuario.class, usu_usuario);
-		assertNotNull(usuario, "El usuario con id " + usu_usuario + " no existe");
+	void cTest() {
+
+		assertNotNull(entityManager, "EL entityManager NULL");
+		Usuario usuario= entityManager.find(Usuario.class, usu_usuario);
+		assertNotNull(usuario, "Usuario con Id:" + usu_usuario + " No existe");
 
 		usuario.setActivo("N");
+
 		entityManager.getTransaction().begin();
 		entityManager.merge(usuario);
 		entityManager.getTransaction().commit();
+		
+
 	}
 
 	@Test
-	@Order(4)
 	@DisplayName("delete")
-	void dtest() {
-		assertNotNull(entityManager, "El entityManager es nulo");
-		Usuario usuario = entityManager.find(Usuario.class, usu_usuario);
-		assertNotNull(usuario, "El usuario con id " + usu_usuario + " no existe");
+	void dTest() {
+
+		assertNotNull(entityManager, "EL entityManager NULL");
+		Usuario usuario= entityManager.find(Usuario.class, usu_usuario);
+		assertNotNull(usuario, "Usuario con Id:" + usu_usuario + " No existe");
 
 		entityManager.getTransaction().begin();
 		entityManager.remove(usuario);
 		entityManager.getTransaction().commit();
+		
+
+	}
+	
+
+	
+	
+	@Test
+	@DisplayName("list")
+	void eTest() {
+
+		assertNotNull(entityManager, "EL entityManager NULL");
+		String jpql= "SELECT usu FROM Usuario usu";
+		Query query= entityManager.createQuery(jpql);
+		List<Usuario> losUsuarios=query.getResultList();
+		assertNotNull(losUsuarios);
+		assertFalse(losUsuarios.isEmpty());
+		
+     	for (Usuario usuario : losUsuarios) {
+     		log.info(usuario.getNombre());
+			
+		}
+     	
+     	losUsuarios.forEach(usuario->{
+     		log.info(usuario.getIdentificacion().toString());     		
+     	});
 	}
 
-	private final static Logger log = LoggerFactory.getLogger(UsuarioJPATest.class);
-
-	@Test
-	@Order(5)
-	@DisplayName("findAll")
-	void eTest() {
-		assertNotNull(entityManager, "El entityManager es nulo");
-		String jpql="FROM Usuario";
-		Query query=entityManager.createQuery(jpql);
-		List<Usuario> usuarios=query.getResultList();
-		assertNotNull(usuarios);
-		assertFalse(usuarios.isEmpty());
-		
-		for (Usuario usuario : usuarios) {
-			log.info(usuario.getNombre());			
-		}
-		
-		usuarios.forEach(usuario->{
-			log.info(usuario.getIdentificacion().toString());
-			});
-}
 
 }

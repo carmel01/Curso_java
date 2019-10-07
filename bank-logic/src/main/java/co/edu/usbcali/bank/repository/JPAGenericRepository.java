@@ -12,6 +12,6 @@ public interface JPAGenericRepository<T, ID> {
 	List<T> findAll();
 
 	void delete(T entity);
-
 	void deleteById(ID id);
+
 }

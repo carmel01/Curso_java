@@ -2,56 +2,67 @@ package co.edu.usbcali.bank.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import java.sql.Timestamp;
 import java.util.List;
-
 
 /**
  * The persistent class for the cliente database table.
  * 
  */
 @Entity
-@NamedQuery(name="Cliente.findAll", query="SELECT c FROM Cliente c")
+@NamedQuery(name = "Cliente.findAll", query = "SELECT c FROM Cliente c")
 public class Cliente implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="clie_id")
+	@Column(name = "clie_id")
+	@NotNull
 	private Long clieId;
 
 	private String activo;
-
+	@NotNull
+	@Size(min = 5, max = 150)
 	private String direccion;
-
+	@Email
 	private String email;
 
-	@Column(name="fecha_creacion")
-	private Timestamp fechaCreacion;
-
-	@Column(name="fecha_modificacion")
-	private Timestamp fechaModificacion;
-
+	@NotNull
+	@Size(min = 5, max = 150)
 	private String nombre;
 
+	@NotNull
+	@Size(min = 8, max = 30)
 	private String telefono;
-
-	@Column(name="usu_creador")
-	private String usuCreador;
-
-	@Column(name="usu_modificador")
-	private String usuModificador;
-
-	//bi-directional many-to-one association to TipoDocumento
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="tdoc_id")
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tdoc_id")
+	@NotNull	
 	private TipoDocumento tipoDocumento;
 
-	//bi-directional many-to-one association to Cuenta
-	@OneToMany(mappedBy="cliente")
+	@Column(name = "usu_creador")
+	private String usuCreador;
+
+	@Column(name = "usu_modificador")
+	private String usuModificador;
+
+	@Column(name = "fecha_creacion")
+	private Timestamp fechaCreacion;
+
+	@Column(name = "fecha_modificacion")
+	private Timestamp fechaModificacion;
+
+	// bi-directional many-to-one association to TipoDocumento
+
+	// bi-directional many-to-one association to Cuenta
+	@OneToMany(mappedBy = "cliente")
 	private List<Cuenta> cuentas;
 
-	//bi-directional many-to-one association to CuentaRegistrada
-	@OneToMany(mappedBy="cliente")
+	// bi-directional many-to-one association to CuentaRegistrada
+	@OneToMany(mappedBy = "cliente")
 	private List<CuentaRegistrada> cuentaRegistradas;
 
 	public Cliente() {
