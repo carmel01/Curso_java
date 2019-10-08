@@ -1,5 +1,6 @@
 package co.edu.usbcali.bank.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +34,13 @@ public class ClienteController {
 		}
 		Cliente cliente=clienteOptional.get();
 		return clienteMapper.clienteToClienteDTO(cliente);
+	}
+	
+	@GetMapping("/findAll")
+	public List<ClienteDTO> findAll()	
+	{
+		List<Cliente> listaClientes =clienteService.findAll();
+		List<ClienteDTO> listaClientesDTO =clienteMapper.toClientesDTO(listaClientes);
+		return listaClientesDTO;
 	}
 }
