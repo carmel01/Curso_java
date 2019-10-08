@@ -10,13 +10,33 @@ import org.springframework.web.bind.annotation.RestController;
 public class OperacionesMatematicas {
 
 	@GetMapping("/sumar/{n1}/{n2}")
-	public Integer sumar(@PathVariable("n1") Integer numUno, @PathVariable("n2") Integer numDos) {
-		return numUno + numDos;
+	public Resultado sumar(@PathVariable("n1") Integer numUno, @PathVariable("n2") Integer numDos) {
+		return new Resultado(numUno+numDos);
+	}
+	
+	@GetMapping("/restar/{n1}/{n2}")
+	public Resultado restar(@PathVariable("n1") Integer numUno, @PathVariable("n2") Integer numDos) {
+		return new Resultado(numUno-numDos);
+	}
+	
+	@GetMapping("/dividir/{n1}/{n2}")
+	public Resultado dividir(@PathVariable("n1") Integer numUno, @PathVariable("n2") Integer numDos) {
+		return new Resultado(numUno/numDos);
+	}
+	
+	@GetMapping("/multiplicar/{n1}/{n2}")
+	public Resultado multiplicar(@PathVariable("n1") Integer numUno, @PathVariable("n2") Integer numDos) {
+		return new Resultado(numUno*numDos);
 	}
 }
 
-class Resultado{
+class Resultado {
 	private Integer valor;
+
+	public Resultado(Integer valor) {
+		super();
+		this.valor = valor;
+	}
 
 	public Integer getValor() {
 		return valor;
@@ -25,5 +45,5 @@ class Resultado{
 	public void setValor(Integer valor) {
 		this.valor = valor;
 	}
-	
+
 }
