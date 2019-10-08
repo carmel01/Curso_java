@@ -1,6 +1,7 @@
 package co.edu.usbcali.bank.mapper;
 
 import co.edu.usbcali.bank.domain.Cliente;
+import co.edu.usbcali.bank.domain.TipoDocumento;
 import co.edu.usbcali.bank.dto.ClienteDTO;
 import javax.annotation.Generated;
 import org.springframework.stereotype.Component;
@@ -20,13 +21,29 @@ public class ClienteMapperImpl implements ClienteMapper {
 
         ClienteDTO clienteDTO = new ClienteDTO();
 
-        clienteDTO.setClieId( cliente.getClieId() );
+        clienteDTO.setTdocId( clienteTipoDocumentoTdocId( cliente ) );
         clienteDTO.setActivo( cliente.getActivo() );
+        clienteDTO.setClieId( cliente.getClieId() );
         clienteDTO.setDireccion( cliente.getDireccion() );
         clienteDTO.setEmail( cliente.getEmail() );
         clienteDTO.setNombre( cliente.getNombre() );
         clienteDTO.setTelefono( cliente.getTelefono() );
 
         return clienteDTO;
+    }
+
+    private Long clienteTipoDocumentoTdocId(Cliente cliente) {
+        if ( cliente == null ) {
+            return null;
+        }
+        TipoDocumento tipoDocumento = cliente.getTipoDocumento();
+        if ( tipoDocumento == null ) {
+            return null;
+        }
+        Long tdocId = tipoDocumento.getTdocId();
+        if ( tdocId == null ) {
+            return null;
+        }
+        return tdocId;
     }
 }
