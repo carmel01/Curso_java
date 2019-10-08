@@ -1,6 +1,6 @@
 package co.edu.usbcali.bank.dto;
 
-public class ClientoDTO {
+public class ClienteDTO {
 
 	private Long ClieId;
 	private String activo;

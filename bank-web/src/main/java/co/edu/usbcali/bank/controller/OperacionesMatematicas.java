@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/cliente")
+@RequestMapping("/operaciones")
 public class OperacionesMatematicas {
 
 	@GetMapping("/sumar/{n1}/{n2}")
