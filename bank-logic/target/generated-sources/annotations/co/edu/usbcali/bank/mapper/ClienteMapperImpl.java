@@ -22,8 +22,8 @@ public class ClienteMapperImpl implements ClienteMapper {
         ClienteDTO clienteDTO = new ClienteDTO();
 
         clienteDTO.setTdocId( clienteTipoDocumentoTdocId( cliente ) );
-        clienteDTO.setActivo( cliente.getActivo() );
         clienteDTO.setClieId( cliente.getClieId() );
+        clienteDTO.setActivo( cliente.getActivo() );
         clienteDTO.setDireccion( cliente.getDireccion() );
         clienteDTO.setEmail( cliente.getEmail() );
         clienteDTO.setNombre( cliente.getNombre() );
