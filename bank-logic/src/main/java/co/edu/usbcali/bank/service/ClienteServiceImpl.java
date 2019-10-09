@@ -1,4 +1,4 @@
-package co.edu.usbcali.bank.repository;
+package co.edu.usbcali.bank.service;
 
 
 
@@ -16,6 +16,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import co.edu.usbcali.bank.domain.Cliente;
+import co.edu.usbcali.bank.repository.ClienteRepository;
+import co.edu.usbcali.bank.repository.TipoDocumentoRepository;
 
 @Service
 @Scope("singleton")
@@ -143,7 +145,7 @@ public class ClienteServiceImpl implements ClienteService {
 
 		}
 
-		if (findById(id).isPresent()) {
+		if (!findById(id).isPresent()) {
 			throw new Exception("El cliente que desea eliminar no existe");
 
 		}

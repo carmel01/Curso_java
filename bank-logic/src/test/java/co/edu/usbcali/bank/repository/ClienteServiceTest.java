@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.usbcali.bank.domain.Cliente;
+import co.edu.usbcali.bank.service.ClienteService;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration("/applicationContext.xml")
