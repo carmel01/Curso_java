@@ -2,6 +2,9 @@ package co.edu.usbcali.bank.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
@@ -18,10 +21,15 @@ public class Usuario implements Serializable {
 
 	@Id
 	@Column(name="usu_usuario")
+	@NotNull
+	@Size(min = 3, max = 25)
 	private String usuUsuario;
 
+	@Size(min = 1, max = 1)
 	private String activo;
 
+	@NotNull
+	@Size(min = 8, max = 15)
 	private String clave;
 
 	@Column(name="fecha_creacion")
@@ -30,8 +38,11 @@ public class Usuario implements Serializable {
 	@Column(name="fecha_modificacion")
 	private Timestamp fechaModificacion;
 
+	@NotNull
 	private BigDecimal identificacion;
 
+	@NotNull
+	@Size(min = 5, max = 100)
 	private String nombre;
 
 	@Column(name="usu_creador")
