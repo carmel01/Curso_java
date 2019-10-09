@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,34 +30,36 @@ public class ClienteController {
 	ClienteMapper clienteMapper;
 
 	@DeleteMapping("/delete/{id}")
-	public void delete (@PathVariable("id")Long id)
-	{
+	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		try {
 			clienteService.deleteById(id);
+			return ResponseEntity.ok().body("");
 		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(new ResponseError(400, e.getMessage()));
 		}
 	}
-	
+
 	@PutMapping("/update")
-	public ClienteDTO update (@RequestBody ClienteDTO clienteDTO)
-	{
+	public ResponseEntity<?> update(@RequestBody ClienteDTO clienteDTO) {
 		try {
 			Cliente cliente = clienteMapper.clienteDTOtoCliente(clienteDTO);
 			cliente = clienteService.update(cliente);
-			return clienteMapper.clienteToClienteDTO(cliente);
+			clienteDTO = clienteMapper.clienteToClienteDTO(cliente);
+			return ResponseEntity.ok().body(clienteDTO);
 		} catch (Exception e) {
-			return null;
+			return ResponseEntity.badRequest().body(new ResponseError(400, e.getMessage()));
 		}
 	}
-	
+
 	@PostMapping("/save")
-	public ClienteDTO save(@RequestBody ClienteDTO clienteDTO) {
+	public ResponseEntity<?> save(@RequestBody ClienteDTO clienteDTO) {
 		try {
 			Cliente cliente = clienteMapper.clienteDTOtoCliente(clienteDTO);
 			cliente = clienteService.save(cliente);
-			return clienteMapper.clienteToClienteDTO(cliente);
+			clienteDTO = clienteMapper.clienteToClienteDTO(cliente);
+			return ResponseEntity.ok().body(clienteDTO);
 		} catch (Exception e) {
-			return null;
+			return ResponseEntity.badRequest().body(new ResponseError(400, e.getMessage()));
 		}
 	}
 

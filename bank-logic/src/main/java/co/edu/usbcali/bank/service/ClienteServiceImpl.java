@@ -1,7 +1,5 @@
 package co.edu.usbcali.bank.service;
 
-
-
 import java.util.List;
 import java.util.Optional;
 
@@ -59,13 +57,8 @@ public class ClienteServiceImpl implements ClienteService {
 
 		validar(cliente);
 
-		 //clienteRepository.findById(cliente.getClieId()).ifPresent(c -> { throw new RuntimeException("El cliente es nulo");});
-		
-		//clienteRepository.findById(cliente.getClieId()).orElseThrow(() -> new Exception("El cliente es nulo"));
-      
-
 		if (clienteRepository.findById(cliente.getClieId()).isPresent() == true) {
-			throw new Exception("el cliente con Id: " + cliente.getClieId() + " es nulo");
+			throw new Exception("el cliente con Id: " + cliente.getClieId() + " ya existe");
 		}
 		if (tipoDocumentoRepository.findById(cliente.getTipoDocumento().getTdocId()).isPresent() == false) {
 			throw new Exception("el tipo documento con Id: " + cliente.getTipoDocumento().getTdocId() + " No existe");
@@ -77,7 +70,6 @@ public class ClienteServiceImpl implements ClienteService {
 	@Override
 	public Cliente update(Cliente cliente) throws Exception {
 		validar(cliente);
-	
 
 		if (clienteRepository.findById(cliente.getClieId()).isPresent() == false) {
 			throw new Exception("el cliente con Id: " + cliente.getClieId() + " no existe");
@@ -85,7 +77,7 @@ public class ClienteServiceImpl implements ClienteService {
 		if (tipoDocumentoRepository.findById(cliente.getTipoDocumento().getTdocId()).isPresent() == false) {
 			throw new Exception("el tipo documento con Id: " + cliente.getTipoDocumento().getTdocId() + " No existe");
 		}
-		Cliente entity=clienteRepository.findById(cliente.getClieId()).get();
+		Cliente entity = clienteRepository.findById(cliente.getClieId()).get();
 		entity.setClieId(cliente.getClieId());
 		entity.setActivo(cliente.getActivo());
 		entity.setDireccion(cliente.getDireccion());
@@ -97,8 +89,7 @@ public class ClienteServiceImpl implements ClienteService {
 		entity.setUsuCreador(cliente.getUsuCreador());
 		entity.setUsuModificador(cliente.getUsuModificador());
 		entity.setTipoDocumento(cliente.getTipoDocumento());
-		
-		
+
 		return clienteRepository.save(entity);
 	}
 
@@ -118,7 +109,6 @@ public class ClienteServiceImpl implements ClienteService {
 	@Override
 	public void delete(Cliente cliente) throws Exception {
 		validar(cliente);
-		
 
 		if (clienteRepository.findById(cliente.getClieId()).isPresent() == false) {
 			throw new Exception("el cliente con Id: " + cliente.getClieId() + " no existe");
