@@ -33,7 +33,7 @@ public class UsuarioController {
 	public ResponseEntity<?> delete(@PathVariable("id") String id) {
 		try {
 			usuarioService.deleteById(id);
-			return ResponseEntity.ok().body("");
+			return ResponseEntity.ok().body(new ResponseError(200, "Se eliminó el usuario " + id));
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(new ResponseError(400, e.getMessage()));
 		}
@@ -64,13 +64,13 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/findById/{id}")
-	public UsuarioDTO findById(@PathVariable("id") String id) {
+	public ResponseEntity<?> findById(@PathVariable("id") String id) {
 		Optional<Usuario> usuOptional = usuarioService.findById(id);
 		if (usuOptional.isPresent() == false) {
-			return null;
+			return ResponseEntity.ok().body(new ResponseError(200, "No existe usuario"));
 		}
 		Usuario usuario = usuOptional.get();
-		return usuarioMapper.usuarioToUsuarioDTO(usuario);
+		return ResponseEntity.ok().body(usuarioMapper.usuarioToUsuarioDTO(usuario));
 	}
 
 	@GetMapping("/findAll")
