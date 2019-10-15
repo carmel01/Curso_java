@@ -19,70 +19,62 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @Rollback(false)
 class OperacionBancariaTest {
 
-	
 	private final static Logger log = LoggerFactory.getLogger(OperacionBancariaTest.class);
-	
+
 	@Autowired
 	IOperacionBancaria operacionBancaria;
-	
-	
+
 	@Test
 	@DisplayName("retirar")
-	void retirar()  {
+	void retirar() {
 		try {
-			assertNotNull(operacionBancaria,"Operacion bancaria es nulo");
-		String cuenId ="4640-0341-9387-5781";
-		BigDecimal valor = new BigDecimal(150000);
-		String usuUsuario="callbrook0";
-		Long numeroTransaccion=operacionBancaria.retirar(cuenId, valor, usuUsuario);
-		assertNotNull(numeroTransaccion,"no retorno numero Transaccion");
-		log.info("Id: "+numeroTransaccion);
-		}catch (Exception e) {
+			assertNotNull(operacionBancaria, "Operacion bancaria es nulo");
+			String cuenId = "4640-0341-9387-5781";
+			BigDecimal valor = new BigDecimal(150000);
+			String usuUsuario = "callbrook0";
+			Long numeroTransaccion = operacionBancaria.retirar(cuenId, valor, usuUsuario);
+			assertNotNull(numeroTransaccion, "no retorno numero Transaccion");
+			log.info("Id: " + numeroTransaccion);
+		} catch (Exception e) {
 			log.error(e.getMessage());
-			assertNull(e,e.getMessage());
+			assertNull(e, e.getMessage());
 		}
 	}
-		
-		@Test
-		@DisplayName("consignar")
-		void consignar()  {
-			try {
-				assertNotNull(operacionBancaria,"Operacion bancaria es nulo");
-			String cuenId ="4640-0341-9387-5781";
+
+	@Test
+	@DisplayName("consignar")
+	void consignar() {
+		try {
+			assertNotNull(operacionBancaria, "Operacion bancaria es nulo");
+			String cuenId = "4640-0341-9387-5781";
 			BigDecimal valor = new BigDecimal(50000);
-			String usuUsuario="callbrook0";
-			Long numeroTransaccion=operacionBancaria.consignar(cuenId, valor, usuUsuario);
-			assertNotNull(numeroTransaccion,"no retorno numero Transaccion");
-			log.info("Id: "+numeroTransaccion);
-			}catch (Exception e) {
-				log.error(e.getMessage());
-				assertNull(e,e.getMessage());
-			}
-	
-		
+			String usuUsuario = "callbrook0";
+			Long numeroTransaccion = operacionBancaria.consignar(cuenId, valor, usuUsuario);
+			assertNotNull(numeroTransaccion, "no retorno numero Transaccion");
+			log.info("Id: " + numeroTransaccion);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			assertNull(e, e.getMessage());
+		}
+
 	}
-		
-		@Test
-		@DisplayName("transferir")
-		void transferir()  { 
-			try {
-				assertNotNull(operacionBancaria,"Operacion bancaria es nulo");
-			String cuentaIdOrigen ="4640-0341-9387-5781";
-			String cuentaIdDestino ="1630-2511-2937-7299";
+
+	@Test
+	@DisplayName("transferir")
+	void transferir() {
+		try {
+			assertNotNull(operacionBancaria, "Operacion bancaria es nulo");
+			String cuentaIdOrigen = "4640-0341-9387-5781";
+			String cuentaIdDestino = "1630-2511-2937-7299";
 			BigDecimal valor = new BigDecimal(15000);
-			String usuUsuario="callbrook0";
-			Long numeroTransaccion=operacionBancaria.transferir(cuentaIdOrigen, cuentaIdDestino, valor, usuUsuario);
-			assertNotNull(numeroTransaccion,"no retorno numero Transaccion");
-			log.info("Id: "+numeroTransaccion);
-			}catch (Exception e) {
-				log.error(e.getMessage());
-				assertNull(e,e.getMessage());
-			}
-	
-		
+			String usuUsuario = "callbrook0";
+			Long numeroTransaccion = operacionBancaria.transferir(cuentaIdOrigen, cuentaIdDestino, valor, usuUsuario);
+			assertNotNull(numeroTransaccion, "no retorno numero Transaccion");
+			log.info("Id: " + numeroTransaccion);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			assertNull(e, e.getMessage());
+		}
+
 	}
-
-
-
-
 }
