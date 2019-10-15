@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class UsuarioMapperImpl implements UsuarioMapper {
 
     @Override
-    public UsuarioDTO usuarioToUsuarioDTO(Usuario usuario) {
+    public UsuarioDTO UsuarioToUsuarioDTO(Usuario usuario) {
         if ( usuario == null ) {
             return null;
         }
@@ -24,6 +24,7 @@ public class UsuarioMapperImpl implements UsuarioMapper {
         UsuarioDTO usuarioDTO = new UsuarioDTO();
 
         usuarioDTO.setTiusId( usuarioTipoUsuarioTiusId( usuario ) );
+        usuarioDTO.setUsuUsuario( usuario.getUsuUsuario() );
         usuarioDTO.setActivo( usuario.getActivo() );
         usuarioDTO.setClave( usuario.getClave() );
         usuarioDTO.setFechaCreacion( usuario.getFechaCreacion() );
@@ -32,31 +33,30 @@ public class UsuarioMapperImpl implements UsuarioMapper {
         usuarioDTO.setNombre( usuario.getNombre() );
         usuarioDTO.setUsuCreador( usuario.getUsuCreador() );
         usuarioDTO.setUsuModificador( usuario.getUsuModificador() );
-        usuarioDTO.setUsuUsuario( usuario.getUsuUsuario() );
 
         return usuarioDTO;
     }
 
     @Override
-    public Usuario usuarioDTOtoUsuario(UsuarioDTO usuarioDTO) {
-        if ( usuarioDTO == null ) {
+    public Usuario UsuarioDTOToUsuario(UsuarioDTO usuario) {
+        if ( usuario == null ) {
             return null;
         }
 
-        Usuario usuario = new Usuario();
+        Usuario usuario1 = new Usuario();
 
-        usuario.setTipoUsuario( usuarioDTOToTipoUsuario( usuarioDTO ) );
-        usuario.setActivo( usuarioDTO.getActivo() );
-        usuario.setClave( usuarioDTO.getClave() );
-        usuario.setFechaCreacion( usuarioDTO.getFechaCreacion() );
-        usuario.setFechaModificacion( usuarioDTO.getFechaModificacion() );
-        usuario.setIdentificacion( usuarioDTO.getIdentificacion() );
-        usuario.setNombre( usuarioDTO.getNombre() );
-        usuario.setUsuCreador( usuarioDTO.getUsuCreador() );
-        usuario.setUsuModificador( usuarioDTO.getUsuModificador() );
-        usuario.setUsuUsuario( usuarioDTO.getUsuUsuario() );
+        usuario1.setTipoUsuario( usuarioDTOToTipoUsuario( usuario ) );
+        usuario1.setUsuUsuario( usuario.getUsuUsuario() );
+        usuario1.setActivo( usuario.getActivo() );
+        usuario1.setClave( usuario.getClave() );
+        usuario1.setFechaCreacion( usuario.getFechaCreacion() );
+        usuario1.setFechaModificacion( usuario.getFechaModificacion() );
+        usuario1.setIdentificacion( usuario.getIdentificacion() );
+        usuario1.setNombre( usuario.getNombre() );
+        usuario1.setUsuCreador( usuario.getUsuCreador() );
+        usuario1.setUsuModificador( usuario.getUsuModificador() );
 
-        return usuario;
+        return usuario1;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class UsuarioMapperImpl implements UsuarioMapper {
 
         List<Usuario> list = new ArrayList<Usuario>( usuarios.size() );
         for ( UsuarioDTO usuarioDTO : usuarios ) {
-            list.add( usuarioDTOtoUsuario( usuarioDTO ) );
+            list.add( UsuarioDTOToUsuario( usuarioDTO ) );
         }
 
         return list;
@@ -81,7 +81,7 @@ public class UsuarioMapperImpl implements UsuarioMapper {
 
         List<UsuarioDTO> list = new ArrayList<UsuarioDTO>( usuarios.size() );
         for ( Usuario usuario : usuarios ) {
-            list.add( usuarioToUsuarioDTO( usuario ) );
+            list.add( UsuarioToUsuarioDTO( usuario ) );
         }
 
         return list;

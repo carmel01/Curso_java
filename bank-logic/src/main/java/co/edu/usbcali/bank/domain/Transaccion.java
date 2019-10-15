@@ -17,6 +17,7 @@ public class Transaccion implements Serializable {
 
 	@Id
 	@Column(name="tran_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long tranId;
 
 	private Timestamp fecha;

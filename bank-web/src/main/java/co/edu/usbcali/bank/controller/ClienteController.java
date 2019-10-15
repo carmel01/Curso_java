@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import co.edu.usbcali.bank.domain.Cliente;
 import co.edu.usbcali.bank.dto.ClienteDTO;
 import co.edu.usbcali.bank.mapper.ClienteMapper;
+import co.edu.usbcali.bank.response.ResponseError;
 import co.edu.usbcali.bank.service.ClienteService;
 
 @RestController
@@ -35,7 +36,7 @@ public class ClienteController {
 			clienteService.deleteById(id);
 			return ResponseEntity.ok().body("");
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new ResponseError(400, e.getMessage()));
+			return ResponseEntity.badRequest().body(new ResponseError(400, ""));
 		}
 	}
 

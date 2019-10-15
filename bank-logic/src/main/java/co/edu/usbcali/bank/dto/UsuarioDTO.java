@@ -15,6 +15,16 @@ public class UsuarioDTO {
 	private String usuCreador;
 	private String usuModificador;
 	private Long tiusId;
+	
+
+
+	public Long getTiusId() {
+		return tiusId;
+	}
+
+	public void setTiusId(Long tiusId) {
+		this.tiusId = tiusId;
+	}
 
 	public String getUsuUsuario() {
 		return usuUsuario;
@@ -88,11 +98,4 @@ public class UsuarioDTO {
 		this.usuModificador = usuModificador;
 	}
 
-	public Long getTiusId() {
-		return tiusId;
-	}
-
-	public void setTiusId(Long tiusId) {
-		this.tiusId = tiusId;
-	}
 }

@@ -1,5 +1,6 @@
 package co.edu.usbcali.bank.repository;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.usbcali.bank.domain.Usuario;
 import co.edu.usbcali.bank.service.UsuarioService;
@@ -24,45 +27,45 @@ import co.edu.usbcali.bank.service.UsuarioService;
 @Rollback(false)
 class UsuarioServiceTest {
 
-	private final static String usu_usuario = "cenavia";
-	private final static Logger log = LoggerFactory.getLogger(UsuarioServiceTest.class);
-
 	@Autowired
 	UsuarioService usuarioService;
 
 	@Autowired
 	TipoUsuarioRepository tipoUsuarioRepository;
 
+	private final static String usu_usuario = "jfiayo";
+	private final static Logger log = LoggerFactory.getLogger(UsuarioServiceTest.class);
+
 	@Test
 	@DisplayName("save")
 	void aTest() {
 
-		assertNotNull(usuarioService, "El usuarioService NULL");
-		assertNotNull(tipoUsuarioRepository, "El tipoUsuarioRepository NULL");
+		assertNotNull(usuarioService, "usuarioService nulo");
+		assertFalse(usuarioService.findById(usu_usuario).isPresent(), "usuario existe");
 		Usuario usuario = new Usuario();
 		usuario.setActivo("S");
-		usuario.setClave("cenavia123");
-		usuario.setNombre("carlitos guey");
+		usuario.setClave("pasword");
+		usuario.setNombre("Fiayiño");
 		usuario.setUsuUsuario(usu_usuario);
 		usuario.setIdentificacion(new BigDecimal(12345));
-		assertTrue(tipoUsuarioRepository.findById(1L).isPresent(), "el tipo de usuario no existe");
+		assertTrue(tipoUsuarioRepository.findById(1L).isPresent(), "Tipo usuario no existe");
 		usuario.setTipoUsuario(tipoUsuarioRepository.findById(1L).get());
-
 		try {
 			usuarioService.save(usuario);
-
 		} catch (Exception e) {
-			assertNull(e, e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 	}
 
 	@Test
 	@DisplayName("finById")
 	void bTest() {
 
-		assertNotNull(usuarioService, "El usuarioService NULL");
+		assertNotNull(usuarioService, "usuarioService nulo");
 		Usuario usuario = usuarioService.findById(usu_usuario).get();
-		assertNotNull(usuario, "Usuario con Id:" + usu_usuario + " No existe");
+		assertNotNull(usuario, "Usiario con Id:" + usu_usuario + " No existe");
 
 	}
 
@@ -70,32 +73,39 @@ class UsuarioServiceTest {
 	@DisplayName("update")
 	void cTest() {
 
-		assertNotNull(usuarioService, "El usuarioService NULL");
+		assertNotNull(usuarioService, "usuarioService nulo");
 		Usuario usuario = usuarioService.findById(usu_usuario).get();
-		assertNotNull(usuario, "Usuario con Id:" + usu_usuario + " No existe");
+		assertNotNull(usuario, "Usiario con Id:" + usu_usuario + " No existe");
 
 		usuario.setActivo("N");
 
 		try {
 			usuarioService.update(usuario);
 		} catch (Exception e) {
-			assertNull(e, e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 	}
 
 	@Test
 	@DisplayName("delete")
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 	void dTest() {
 
-		assertNotNull(usuarioService, "El usuarioService NULL");
+		assertNotNull(usuarioService, "usuarioService nulo");
 		Usuario usuario = usuarioService.findById(usu_usuario).get();
-		assertNotNull(usuario, "Usuario con Id:" + usu_usuario + " No existe");
+		assertNotNull(usuario, "Usiario con Id:" + usu_usuario + " No existe");
 
 		try {
 			usuarioService.delete(usuario);
 		} catch (Exception e) {
-			assertNull(e, e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
+
+
+
 }

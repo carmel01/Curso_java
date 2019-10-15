@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,7 @@ public class TipoDocumentoRepositoryImpl implements TipoDocumentoRepository {
 
 	@PersistenceContext
 	EntityManager entityManager;
+
 
 	@Override
 	public TipoDocumento save(TipoDocumento entity) {

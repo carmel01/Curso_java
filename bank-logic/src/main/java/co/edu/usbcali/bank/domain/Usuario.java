@@ -21,15 +21,14 @@ public class Usuario implements Serializable {
 
 	@Id
 	@Column(name="usu_usuario")
+	@Size(min = 5, max = 10)
 	@NotNull
-	@Size(min = 3, max = 25)
 	private String usuUsuario;
 
-	@Size(min = 1, max = 1)
+	@Size(min = 1,max=1)
 	private String activo;
 
 	@NotNull
-	@Size(min = 8, max = 15)
 	private String clave;
 
 	@Column(name="fecha_creacion")
@@ -40,9 +39,8 @@ public class Usuario implements Serializable {
 
 	@NotNull
 	private BigDecimal identificacion;
-
-	@NotNull
-	@Size(min = 5, max = 100)
+	
+	@Size(min = 5, max = 20)
 	private String nombre;
 
 	@Column(name="usu_creador")
