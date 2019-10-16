@@ -34,9 +34,9 @@ public class ClienteController {
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		try {
 			clienteService.deleteById(id);
-			return ResponseEntity.ok().body("");
+			return ResponseEntity.ok().body(new ResponseError(200, "El cliente "+id+" eliminado"));
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new ResponseError(400, ""));
+			return ResponseEntity.badRequest().body(new ResponseError(400, "El cliente no existe"));
 		}
 	}
 

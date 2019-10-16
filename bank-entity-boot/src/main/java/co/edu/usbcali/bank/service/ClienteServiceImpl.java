@@ -77,20 +77,8 @@ public class ClienteServiceImpl implements ClienteService {
 		if (tipoDocumentoRepository.findById(cliente.getTipoDocumento().getTdocId()).isPresent() == false) {
 			throw new Exception("el tipo documento con Id: " + cliente.getTipoDocumento().getTdocId() + " No existe");
 		}
-		Cliente entity = clienteRepository.findById(cliente.getClieId()).get();
-		entity.setClieId(cliente.getClieId());
-		entity.setActivo(cliente.getActivo());
-		entity.setDireccion(cliente.getDireccion());
-		entity.setEmail(cliente.getEmail());
-		entity.setFechaCreacion(cliente.getFechaCreacion());
-		entity.setFechaModificacion(cliente.getFechaModificacion());
-		entity.setNombre(cliente.getNombre());
-		entity.setTelefono(cliente.getTelefono());
-		entity.setUsuCreador(cliente.getUsuCreador());
-		entity.setUsuModificador(cliente.getUsuModificador());
-		entity.setTipoDocumento(cliente.getTipoDocumento());
 
-		return clienteRepository.save(entity);
+		return clienteRepository.save(cliente);
 	}
 
 	@Transactional(readOnly = true)
@@ -141,6 +129,18 @@ public class ClienteServiceImpl implements ClienteService {
 		}
 		delete(findById(id).get());
 
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Cliente> findByNombre(String nombre) {
+
+		return clienteRepository.findByNombre(nombre);
+	}
+
+	@Override
+	public List<Cliente> findByNombreLike(String nombre) {
+		return clienteRepository.findByNombreLike(nombre);
 	}
 
 }

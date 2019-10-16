@@ -1,23 +1,22 @@
 package co.edu.usbcali.bank.service;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.usbcali.bank.domain.Cliente;
 import co.edu.usbcali.bank.repository.TipoDocumentoRepository;
-import co.edu.usbcali.bank.service.ClienteService;
 
 @SpringBootTest
 @Rollback(false)
@@ -27,9 +26,11 @@ class ClienteServiceTest {
 
 	@Autowired
 	ClienteService clienteService;
+
 	@Autowired
 	TipoDocumentoRepository documentoRepository;
 
+	private final static Logger log=LoggerFactory.getLogger(ClienteServiceTest.class);
 	@Test
 	@DisplayName("save")
 	void aTest() {
@@ -93,8 +94,42 @@ class ClienteServiceTest {
 		} catch (Exception e) {
 			assertNull(e,e.getMessage());
 		}
+	}
+	
+	@Test
+	@DisplayName("findByNombre")
+	void eTest() {
 
+		assertNotNull(clienteService,"El clienteService es nulo");
+		
+		List<Cliente> clientes=clienteService.findByNombre("Karole Dunge");
+		
+		assertNotNull(clientes,"nulo en los clientes");
+		
+		assertFalse(clientes.isEmpty(),"No hay clientes para mostrar con ese nombre");
+		
+		for (Cliente cliente : clientes) {
+			log.info("Id: "+cliente.getClieId());
+			log.info("Nombre: "+cliente.getNombre());
+		}
+	}
+	
+	@Test
+	@DisplayName("findByNombreLike")
+	void fTest() {
 
+		assertNotNull(clienteService,"El clienteService es nulo");
+		
+		List<Cliente> clientes=clienteService.findByNombreLike("Kar%");
+		
+		assertNotNull(clientes,"nulo en los clientes");
+		
+		assertFalse(clientes.isEmpty(),"No hay clientes para mostrar con ese nombre");
+		
+		for (Cliente cliente : clientes) {
+			log.info("Id: "+cliente.getClieId());
+			log.info("Nombre: "+cliente.getNombre());
+		}
 	}
 
 }
