@@ -15,27 +15,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.usbcali.bank.domain.Cliente;
 import co.edu.usbcali.bank.domain.Usuario;
-import co.edu.usbcali.bank.repository.ClienteRepository;
 import co.edu.usbcali.bank.repository.TipoUsuarioRepository;
 import co.edu.usbcali.bank.repository.UsuarioRepository;
 
 @Service
 @Scope("singleton")
-public class UsuarioServiceImpl  implements UsuarioService{
+public class UsuarioServiceImpl implements UsuarioService {
 
 	@Autowired
 	UsuarioRepository usuarioRepository;
-	
+
 	@Autowired
-	TipoUsuarioRepository tipoUsuariorepository;
-	
+	TipoUsuarioRepository tipoUsuarioRepository;
+
 	@Autowired
 	Validator validator;
 
 	public void validar(Usuario usuario) throws Exception {
+
 		if (usuario == null) {
-			throw new Exception("el usuario es nulo");
+			throw new Exception("El usuario es nulo");
 		}
+
 		Set<ConstraintViolation<Usuario>> constraintViolations = validator.validate(usuario);
 
 		if (constraintViolations.size() > 0) {
@@ -50,38 +51,38 @@ public class UsuarioServiceImpl  implements UsuarioService{
 
 			throw new Exception(strMessage.toString());
 		}
-
 	}
 
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public Usuario save(Usuario usuario) throws Exception {
-
 		validar(usuario);
 
 		if (usuarioRepository.findById(usuario.getUsuUsuario()).isPresent() == true) {
-			throw new Exception("el usuario con Id: " + usuario.getUsuUsuario() + " ya existe");
+			throw new Exception("El usuario con id " + usuario.getUsuUsuario() + " ya existe");
 		}
-		if (tipoUsuariorepository.findById(usuario.getTipoUsuario().getTiusId()).isPresent() == false) {
-			throw new Exception("el tipo de usuario con Id: " + usuario.getTipoUsuario().getTiusId() + " No existe");
+		if (tipoUsuarioRepository.findById(usuario.getTipoUsuario().getTiusId()).isPresent() == false) {
+			throw new Exception("El tipo de usuario con id " + usuario.getTipoUsuario().getTiusId() + " no existe");
 		}
-		
+
 		return usuarioRepository.save(usuario);
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	@Override
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public Usuario update(Usuario usuario) throws Exception {
 		validar(usuario);
 
 		if (usuarioRepository.findById(usuario.getUsuUsuario()).isPresent() == false) {
-			throw new Exception("el usuario con Id: " + usuario.getUsuUsuario() + " No existe");
-		}
-		if (tipoUsuariorepository.findById(usuario.getTipoUsuario().getTiusId()).isPresent() == false) {
-			throw new Exception("el tipo de usuario con Id: " + usuario.getTipoUsuario().getTiusId() + " No existe");
+			throw new Exception("El usuario con id " + usuario.getUsuUsuario() + " no existe");
 		}
 		
-		Usuario entity = usuarioRepository.findById(usuario.getUsuUsuario()).get();
+		if (tipoUsuarioRepository.findById(usuario.getTipoUsuario().getTiusId()).isPresent() == false) {
+			throw new Exception("El tipo de usuario con id " + usuario.getTipoUsuario().getTiusId() + " no existe");
+		}
+		
+		Usuario entity=usuarioRepository.findById(usuario.getUsuUsuario()).get();
+		
 		entity.setActivo(usuario.getActivo());
 		entity.setClave(usuario.getClave());
 		entity.setFechaCreacion(usuario.getFechaCreacion());
@@ -89,60 +90,58 @@ public class UsuarioServiceImpl  implements UsuarioService{
 		entity.setIdentificacion(usuario.getIdentificacion());
 		entity.setNombre(usuario.getNombre());
 		entity.setTipoUsuario(usuario.getTipoUsuario());
+		entity.setTransaccions(usuario.getTransaccions());
 		entity.setUsuCreador(usuario.getUsuCreador());
 		entity.setUsuModificador(usuario.getUsuModificador());
 		entity.setUsuUsuario(usuario.getUsuUsuario());
 		
-		
-		
-		
-
 		return usuarioRepository.save(entity);
 	}
 
-	@Transactional(readOnly = true)
 	@Override
-	public Optional<Usuario> findById(String usuUsuario) {
-		return usuarioRepository.findById(usuUsuario);
+	@Transactional(readOnly = true)
+	public Optional<Usuario> findById(String id) {
+		return usuarioRepository.findById(id);
 	}
 
-	@Transactional(readOnly = true)
 	@Override
+	@Transactional(readOnly = true)
 	public List<Usuario> findAll() {
 		return usuarioRepository.findAll();
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	@Override
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void delete(Usuario usuario) throws Exception {
 		validar(usuario);
-
+		
 		if (usuarioRepository.findById(usuario.getUsuUsuario()).isPresent() == false) {
-			throw new Exception("el usuario con Id: " + usuario.getUsuUsuario() + " No existe");
-		}
-		usuario = findById(usuario.getUsuUsuario()).get();
-		if (usuario.getTransaccions().size() > 0) {
-			throw new Exception("No se puede borrar el cliente transacciones registradas");
-
+			throw new Exception("El usuario con id " + usuario.getUsuUsuario() + " no existe");
 		}
 		
-
+		usuario = findById(usuario.getUsuUsuario()).get();
+		
+		if (usuario.getTransaccions().size()>0) {
+			throw new Exception("No se puede borrar el cliente porque tiene transacciones registradas");
+		}
+		
 		usuarioRepository.delete(usuario);
 
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	@Override
-	public void deleteById(String usuUsuario) throws Exception {
-		if (usuUsuario == null || usuUsuario.isEmpty()) {
-
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void deleteById(String id) throws Exception {
+		if (id==null) {
+			throw new Exception("El id no puede ser nulo");
 		}
-
-		if (!findById(usuUsuario).isPresent()) {
+		
+		if (findById(id).isPresent()==false) {
 			throw new Exception("El usuario que desea eliminar no existe");
-
 		}
-		delete(findById(usuUsuario).get());
+		
+		delete(findById(id).get());
 
 	}
+
 }

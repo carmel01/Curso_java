@@ -10,15 +10,13 @@ import co.edu.usbcali.bank.dto.UsuarioDTO;
 
 @Mapper
 public interface UsuarioMapper {
-
-	@Mapping(source = "tipoUsuario.tiusId", target = "tiusId")
-	UsuarioDTO UsuarioToUsuarioDTO(Usuario usuario);
-
-	@Mapping(source = "tiusId", target = "tipoUsuario.tiusId")
-	Usuario UsuarioDTOToUsuario(UsuarioDTO usuario);
-
-	List<Usuario> toUsuarios(List<UsuarioDTO> usuarios);
-
-	List<UsuarioDTO> toUsuariosDTO(List<Usuario> usuarios);
+	@Mapping(source="tipoUsuario.tiusId", target="tiusId" )
+	UsuarioDTO usuarioToUsuarioDTO(Usuario usuario);
+	
+	@Mapping(source="tiusId",target= "tipoUsuario.tiusId")
+	Usuario usuarioDTOtoUsuario(UsuarioDTO usuarioDTO);
+	    
+    List<Usuario> toUsuarios(List<UsuarioDTO> usuariosDTO );
+    List<UsuarioDTO> toUsuariosDTO(List<Usuario> usuarios );
 
 }

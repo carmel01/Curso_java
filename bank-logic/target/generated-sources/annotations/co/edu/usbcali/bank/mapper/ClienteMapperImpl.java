@@ -54,13 +54,13 @@ public class ClienteMapperImpl implements ClienteMapper {
     }
 
     @Override
-    public List<Cliente> toClientes(List<ClienteDTO> clientes) {
-        if ( clientes == null ) {
+    public List<Cliente> toClientes(List<ClienteDTO> clientesDTO) {
+        if ( clientesDTO == null ) {
             return null;
         }
 
-        List<Cliente> list = new ArrayList<Cliente>( clientes.size() );
-        for ( ClienteDTO clienteDTO : clientes ) {
+        List<Cliente> list = new ArrayList<Cliente>( clientesDTO.size() );
+        for ( ClienteDTO clienteDTO : clientesDTO ) {
             list.add( clienteDTOtoCliente( clienteDTO ) );
         }
 

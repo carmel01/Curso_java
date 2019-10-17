@@ -3,6 +3,8 @@ package co.edu.usbcali.bank.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,12 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import co.edu.usbcali.bank.domain.Cliente;
 import co.edu.usbcali.bank.dto.ClienteDTO;
 import co.edu.usbcali.bank.mapper.ClienteMapper;
-import co.edu.usbcali.bank.response.ResponseError;
 import co.edu.usbcali.bank.service.ClienteService;
 
 @RestController
 @RequestMapping("/cliente")
 public class ClienteController {
+
+	private final static Logger log = LoggerFactory.getLogger(ClienteController.class);
 
 	@Autowired
 	ClienteService clienteService;
@@ -34,9 +37,10 @@ public class ClienteController {
 	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 		try {
 			clienteService.deleteById(id);
-			return ResponseEntity.ok().body(new ResponseError(200, "El cliente "+id+" eliminado"));
+			return ResponseEntity.ok().body("");
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new ResponseError(400, "El cliente no existe"));
+			log.error(e.getMessage());
+			return ResponseEntity.badRequest().body(new ResponseError(400,e.getMessage()));
 		}
 	}
 
@@ -45,10 +49,10 @@ public class ClienteController {
 		try {
 			Cliente cliente = clienteMapper.clienteDTOtoCliente(clienteDTO);
 			cliente = clienteService.update(cliente);
-			clienteDTO = clienteMapper.clienteToClienteDTO(cliente);
-			return ResponseEntity.ok().body(clienteDTO);
+			return ResponseEntity.ok().body("");
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new ResponseError(400, e.getMessage()));
+			log.error(e.getMessage());
+			return ResponseEntity.badRequest().body(new ResponseError(400,e.getMessage()));
 		}
 	}
 
@@ -57,10 +61,9 @@ public class ClienteController {
 		try {
 			Cliente cliente = clienteMapper.clienteDTOtoCliente(clienteDTO);
 			cliente = clienteService.save(cliente);
-			clienteDTO = clienteMapper.clienteToClienteDTO(cliente);
-			return ResponseEntity.ok().body(clienteDTO);
+			return ResponseEntity.ok().body("");
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new ResponseError(400, e.getMessage()));
+			return ResponseEntity.badRequest().body(new ResponseError(400,e.getMessage()));
 		}
 	}
 

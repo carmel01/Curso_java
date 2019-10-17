@@ -11,13 +11,14 @@ import co.edu.usbcali.bank.dto.ClienteDTO;
 @Mapper
 public interface ClienteMapper {
 
-	@Mapping(source = "tipoDocumento.tdocId",target = "tdocId")
+	@Mapping(source="tipoDocumento.tdocId", target="tdocId")
 	ClienteDTO clienteToClienteDTO(Cliente cliente);
 	
-	@Mapping(source = "tdocId",target = "tipoDocumento.tdocId")
+	@Mapping(source="tdocId", target="tipoDocumento.tdocId")
 	Cliente clienteDTOtoCliente(ClienteDTO clienteDTO);
 	
-	List<Cliente> toClientes(List<ClienteDTO> clientes);
+	List<Cliente> toCliente(List<ClienteDTO> losClientesDTO);
 	
-	List<ClienteDTO> toClientesDTO(List<Cliente> clientes);
+	List<ClienteDTO> toClientesDTO (List<Cliente> losClientes);
+	
 }

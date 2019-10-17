@@ -1,0 +1,93 @@
+{
+	"info": {
+		"_postman_id": "430eada8-9c4e-4f52-b48e-4c77cdf233e2",
+		"name": "Cliente",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Save",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				},
+				"description": "save cliente"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/bank-web/api/cliente/findAll",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/bank-web/api/cliente/findAll",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"bank-web",
+						"api",
+						"cliente",
+						"findAll"
+					]
+				},
+				"description": "Find ALL"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/bank-web/api/cliente/findById/4",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/bank-web/api/cliente/findById/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"bank-web",
+						"api",
+						"cliente",
+						"findById",
+						"1"
+					]
+				},
+				"description": "Find By ID "
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/bank-web/api/cliente/update",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				},
+				"description": "update"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/bank-web/api/cliente/findById/9091",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				},
+				"description": "delete"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

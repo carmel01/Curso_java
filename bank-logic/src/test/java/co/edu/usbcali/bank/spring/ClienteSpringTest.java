@@ -22,102 +22,93 @@ import org.springframework.transaction.annotation.Transactional;
 import co.edu.usbcali.bank.domain.Cliente;
 import co.edu.usbcali.bank.domain.TipoDocumento;
 
-
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration("/applicationContext.xml")
 @Rollback(false)
 class ClienteSpringTest {
 
-	private final static Long clieId = 4560L;
-	private final static Logger log=LoggerFactory.getLogger(ClienteSpringTest.class);
-	
+	private final static Long clieId=450L;
 	
 	@PersistenceContext
 	EntityManager entityManager;
-
+	
 	@Test
-	@DisplayName("insert")
-	@Transactional(readOnly = false,propagation = Propagation.REQUIRED)
-	void aTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		Cliente cliente = entityManager.find(Cliente.class, clieId);
-		assertNull(cliente, "Cliente con Id:" + clieId + " ya existe");
-		cliente = new Cliente();
-		cliente.setActivo("S");
-		cliente.setClieId(clieId);
-		cliente.setEmail("j@gmail.com");
-		cliente.setDireccion("uni san buenaventura");
-		cliente.setNombre("Fiayiño");
-		cliente.setTelefono("321675887");
-
-		TipoDocumento tipoDocumento = entityManager.find(TipoDocumento.class, 1L);
-		assertNotNull(tipoDocumento, "Tipo documento no existe");
-		cliente.setTipoDocumento(tipoDocumento);
-	    entityManager.persist(cliente);
-		
-		
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+	void test() {
+	 assertNotNull(entityManager,"El entityManager es nulo);");
+	   Cliente cliente=entityManager.find(Cliente.class, clieId);
+	   assertNull(cliente,"El cliente con id:"+clieId+"Ya existe");
+	   
+	   cliente= new Cliente();
+	   cliente.setActivo("S");
+	   cliente.setClieId(clieId);
+	   cliente.setDireccion("Avenida Siempre Viva 123");
+	   cliente.setEmail("prueba@gmail.com");
+	   cliente.setNombre("Max Power");
+	   cliente.setTelefono("2332534");
+	   
+	   TipoDocumento tipoDocumento=entityManager.find(TipoDocumento.class,1L);
+	   assertNotNull(tipoDocumento,"El tipo de documento con id:1 no existe");
+	   cliente.setTipoDocumento(tipoDocumento);
+	   
+	   entityManager.persist(cliente);		 
 	}
 	
-	
 	@Test
-	@DisplayName("finById")
+	@DisplayName("findById")
+	@Transactional(readOnly = true)
 	void bTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		Cliente cliente = entityManager.find(Cliente.class, clieId);
-		assertNotNull(cliente, "Cliente con Id:" + clieId + " No existe");
-
-	}
-
+	   assertNotNull(entityManager,"El entityManager es nulo");
+	   Cliente cliente=entityManager.find(Cliente.class, clieId);
+	   assertNotNull(cliente,"El cliente con id:"+clieId+"No existe");
+   
+	}		
+	
 	@Test
 	@DisplayName("update")
 	@Transactional(readOnly = false,propagation = Propagation.REQUIRED)
 	void cTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		Cliente cliente = entityManager.find(Cliente.class, clieId);
-		assertNotNull(cliente, "Cliente con Id:" + clieId + " No existe");
-		cliente.setActivo("N");
-		entityManager.merge(cliente);
-		
-	}
-
+	   assertNotNull(entityManager,"El entityManager es nulo");
+	   Cliente cliente=entityManager.find(Cliente.class, clieId);
+	   assertNotNull(cliente,"El cliente con id:"+clieId+"No existe");
+	   
+	   cliente.setActivo("N");
+	   
+	   entityManager.merge(cliente);
+	}	
+	
 	@Test
 	@DisplayName("delete")
 	@Transactional(readOnly = false,propagation = Propagation.REQUIRED)
 	void dTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		Cliente cliente = entityManager.find(Cliente.class, clieId);
-		assertNotNull(cliente, "Cliente con Id:" + clieId + " No existe");
-		entityManager.remove(cliente);
-		
-	}
+	   assertNotNull(entityManager,"El entityManager es nulo");
+	   Cliente cliente=entityManager.find(Cliente.class, clieId);
+	   assertNotNull(cliente,"El cliente con id:"+clieId+"No existe");
+	   
+	   entityManager.remove(cliente);
+   
+	}		
 	
-
-	
+	private final static Logger log=LoggerFactory.getLogger(ClienteSpringTest.class);
 	
 	@Test
-	@DisplayName("list")
+	@DisplayName("findAll")
 	@Transactional(readOnly = true)
 	void eTest() {
+	   assertNotNull(entityManager,"El entityManager es nulo");
+       String jpql="SELECT cli FROM Cliente cli";
+       Query query=entityManager.createQuery(jpql);
+       List<Cliente> Clientes=query.getResultList();
+       assertNotNull(Clientes);
+       assertFalse(Clientes.isEmpty());
+       
+       Clientes.forEach(cliente->{
+         log.info(cliente.getNombre());
+       });
+	}	
 
-		assertNotNull(entityManager, "EL entityManager NULL");
-		String jpql= "SELECT cli FROM Cliente cli";
-		Query query= entityManager.createQuery(jpql);
-		List<Cliente> losClientes=query.getResultList();
-		assertNotNull(losClientes);
-		assertFalse(losClientes.isEmpty());
+	
+	
 		
-     	for (Cliente cliente : losClientes) {
-     		log.info(cliente.getNombre());
-			
-		}
-     	
-     	losClientes.forEach(cliente->{
-     		log.info(cliente.getClieId().toString());     		
-     	});
-	}
 
 }

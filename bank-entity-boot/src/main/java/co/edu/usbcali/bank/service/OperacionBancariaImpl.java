@@ -19,21 +19,23 @@ import co.edu.usbcali.bank.domain.Cuenta;
 import co.edu.usbcali.bank.domain.TipoTransaccion;
 import co.edu.usbcali.bank.domain.Transaccion;
 import co.edu.usbcali.bank.domain.Usuario;
-import co.edu.usbcali.bank.repository.ICuentaRepository;
+import co.edu.usbcali.bank.repository.CuentaRepository;
+import co.edu.usbcali.bank.repository.TipoDocumentoRepository;
 import co.edu.usbcali.bank.repository.TipoTransaccionRepository;
 import co.edu.usbcali.bank.repository.TransaccionRepository;
+import co.edu.usbcali.bank.repository.UsuarioRepository;
 
 @Service
 @Scope("singleton")
-public class OperacionBancariaImpl implements IOperacionBancaria {
+public class OperacionBancariaImpl implements OperacionBancaria {
+
+	private final static Logger log=LoggerFactory.getLogger(OperacionBancariaImpl.class);
 	
-	private final static Logger log = LoggerFactory.getLogger(OperacionBancariaImpl.class);
+	@Autowired
+	CuentaRepository cuentaRepository;
 
 	@Autowired
-	ICuentaRepository cuentaRepository;
-
-	@Autowired
-	UsuarioService usuarioService;
+	UsuarioRepository usuarioRepository;//usar service
 	
 	@Autowired
 	TipoTransaccionRepository tipoTransaccionRepository;
@@ -43,146 +45,128 @@ public class OperacionBancariaImpl implements IOperacionBancaria {
 	
 	@PostConstruct
 	void postConstruct() {
-		log.info("############### se ejecuto postConstruct");
+		log.info("######## Se ejecuto el postConstruct #####3");
 	}
+	
 	@PreDestroy
 	void preDestroy() {
-		log.info("############### se ejecuto preDestroy");
+		log.info("######## Se ejecuto el preDestroy #####3");
 	}
-
 
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public Long retirar(String cuentaId, BigDecimal valor, String usuUsuario) throws Exception {
+	public Long retirar(String cuenId, BigDecimal valor, String usuUsuario) throws Exception {
 
-		validar(cuentaId, valor, usuUsuario);
-		Cuenta cuenta = cuentaRepository.findById(cuentaId).get();
-		Usuario usuario = usuarioService.findById(usuUsuario).get();
-
-		if (cuenta.getSaldo().compareTo(valor) == -1) {
-
-			throw new Exception("No se puede realizar el retiro fondos insuficientes");
+		validar(cuenId, valor, usuUsuario);
+		
+		Cuenta cuenta=cuentaRepository.findById(cuenId).get();
+		Usuario usuario=usuarioRepository.findById(usuUsuario).get();
+		
+		if (cuenta.getSaldo().compareTo(valor)==-1) {
+			throw new Exception("No se puede realizar el retiro. Fondos insuficientes");
 		}
-
+		
 		Transaccion transaccion = new Transaccion();
 		transaccion.setCuenta(cuenta);
-		transaccion.setFecha(new Timestamp(System.currentTimeMillis()));
+		transaccion.setFecha(new Timestamp(System.currentTimeMillis()) );
 		transaccion.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
 		transaccion.setTranId(null);
-		
-		TipoTransaccion tipoTransaccion= tipoTransaccionRepository.findById(1L).get();
+		TipoTransaccion tipoTransaccion = tipoTransaccionRepository.findById(1L).get();
 		transaccion.setTipoTransaccion(tipoTransaccion);
 		transaccion.setUsuario(usuario);
 		transaccion.setUsuCreador(usuUsuario);
 		transaccion.setValor(valor);
 		
 		cuenta.setSaldo(cuenta.getSaldo().subtract(valor));
-
 		cuentaRepository.save(cuenta);
 		
 		transaccion=transaccionRepository.save(transaccion);
 		return transaccion.getTranId();
-
+	
 	}
 
-	private void validar(String cuentaId, BigDecimal valor, String usuUsuario) throws Exception {
-		if (cuentaId == null || cuentaId.trim().equals("") == true) {
-
+	private void validar(String cuenId, BigDecimal valor, String usuUsuario) throws Exception {
+		if (cuenId == null || cuenId.trim().equals("") == true) {
 			throw new Exception("El numero de la cuenta es obligatorio");
-
 		}
+
 		if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
-
 			throw new Exception("El valor debe ser positivo");
-
 		}
+
 		if (usuUsuario == null || usuUsuario.trim().equals("") == true) {
-
-			throw new Exception("El id debe ser obligatorio");
-
+			throw new Exception("El usuario es obligatorio");
 		}
-		Optional<Cuenta> cuentaOptional = cuentaRepository.findById(cuentaId);
-		if (cuentaOptional.isPresent() == false) {
-			throw new Exception("la cuenta con id: " + cuentaId + "no existe");
 
+		Optional<Cuenta> cuentaOptional = cuentaRepository.findById(cuenId);
+
+		if (cuentaOptional.isPresent() == false) {
+			throw new Exception("La cuenta con id " + cuenId + " no existe");
 		}
 		if (cuentaOptional.get().getActiva().equals("N") == true) {
-			throw new Exception("la cuenta con id: " + cuentaId + " se encuentra in-activa");
-
+			throw new Exception("La cuenta con id " + cuenId + " se encuentra inactiva");
 		}
 
-		Optional<Usuario> usuarioOptional = usuarioService.findById(usuUsuario);
-
+		Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuUsuario);
 		if (usuarioOptional.isPresent() == false) {
-			throw new Exception("El usuario  con id: " + usuUsuario + "no existe");
-
+			throw new Exception("El usuario " + usuUsuario + " se encuentra inactivo");
 		}
-
 		if (usuarioOptional.get().getActivo().equals("N") == true) {
-			throw new Exception("El usuario " + usuUsuario + " esta  in-activo");
+			throw new Exception("El usuario " + cuenId + " se encuentra inactivo");
 		}
 	}
 
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public Long consignar(String cuentaId, BigDecimal valor, String usuUsuario) throws Exception {
-
-		validar(cuentaId, valor, usuUsuario);
-		Cuenta cuenta = cuentaRepository.findById(cuentaId).get();
-		Usuario usuario = usuarioService.findById(usuUsuario).get();
-
+	public Long consignar(String cuenId, BigDecimal valor, String usuUsuario) throws Exception {
+		validar(cuenId, valor, usuUsuario);
 		
-
+		Cuenta cuenta=cuentaRepository.findById(cuenId).get();
+		Usuario usuario=usuarioRepository.findById(usuUsuario).get();
+		
 		Transaccion transaccion = new Transaccion();
 		transaccion.setCuenta(cuenta);
-		transaccion.setFecha(new Timestamp(System.currentTimeMillis()));
+		transaccion.setFecha(new Timestamp(System.currentTimeMillis()) );
 		transaccion.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
 		transaccion.setTranId(null);
-		
-		TipoTransaccion tipoTransaccion= tipoTransaccionRepository.findById(2L).get();
+		TipoTransaccion tipoTransaccion = tipoTransaccionRepository.findById(2L).get();
 		transaccion.setTipoTransaccion(tipoTransaccion);
 		transaccion.setUsuario(usuario);
 		transaccion.setUsuCreador(usuUsuario);
 		transaccion.setValor(valor);
 		
-		cuenta.setSaldo(cuenta.getSaldo().subtract(valor));
-
+		cuenta.setSaldo(cuenta.getSaldo().add(valor));
 		cuentaRepository.save(cuenta);
 		
 		transaccion=transaccionRepository.save(transaccion);
 		return transaccion.getTranId();
-
 	}
 
 	@Override
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public Long transferir(String cuentaIdOrigen, String cuentaIdDestino, BigDecimal valor, String usuUsuario)
+	public Long transferir(String cuenIdOrigen, String cuenIdDestino, BigDecimal valor, String usuUsuario)
 			throws Exception {
-		retirar(cuentaIdOrigen, valor, usuUsuario);
-		consignar(cuentaIdDestino, valor, usuUsuario);
-		retirar(cuentaIdOrigen,new BigDecimal(2000), usuUsuario);
+		retirar(cuenIdOrigen, valor, usuUsuario);
+		consignar(cuenIdDestino, valor, usuUsuario);
+		retirar(cuenIdOrigen, new BigDecimal(2000), usuUsuario);
 		consignar("9999-9999-9999-9999", new BigDecimal(2000), usuUsuario);
 		
-		Cuenta cuenta = cuentaRepository.findById(cuentaIdOrigen).get();
-		Usuario usuario = usuarioService.findById(usuUsuario).get();
+		Cuenta cuenta=cuentaRepository.findById(cuenIdOrigen).get();
+		Usuario usuario=usuarioRepository.findById(usuUsuario).get();
 		
 		Transaccion transaccion = new Transaccion();
 		transaccion.setCuenta(cuenta);
-		transaccion.setFecha(new Timestamp(System.currentTimeMillis()));
+		transaccion.setFecha(new Timestamp(System.currentTimeMillis()) );
 		transaccion.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
 		transaccion.setTranId(null);
-		
-		TipoTransaccion tipoTransaccion= tipoTransaccionRepository.findById(3L).get();
+		TipoTransaccion tipoTransaccion = tipoTransaccionRepository.findById(3L).get();
 		transaccion.setTipoTransaccion(tipoTransaccion);
 		transaccion.setUsuario(usuario);
 		transaccion.setUsuCreador(usuUsuario);
 		transaccion.setValor(valor);
 		
-		
 		transaccion=transaccionRepository.save(transaccion);
 		return transaccion.getTranId();
-		
-
 	}
 
 }

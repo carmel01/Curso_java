@@ -1,6 +1,8 @@
 package co.edu.usbcali.bank.jpa;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 
@@ -10,7 +12,6 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import org.junit.jupiter.api.AfterEach;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,116 +21,106 @@ import org.slf4j.LoggerFactory;
 import co.edu.usbcali.bank.domain.Cliente;
 import co.edu.usbcali.bank.domain.TipoDocumento;
 
-class ClienteJPATest {
 
-	private final static Long clieId = 4560L;
-	private final static Logger log=LoggerFactory.getLogger(ClienteJPATest.class);
+class ClienteJpaTest {
+
+	private final static Long clieId=4560L;
 	
-	EntityManagerFactory entityManagerFactory = null;
-	EntityManager entityManager = null;
-
+	EntityManagerFactory entityManagerFactory=null;
+	EntityManager entityManager=null;
+	
 	@BeforeEach
-	void beforeEach() {
-		entityManagerFactory = Persistence.createEntityManagerFactory("bank-logic");
-		entityManager = entityManagerFactory.createEntityManager();
-
+	void beforeEach(){
+		entityManagerFactory=Persistence.createEntityManagerFactory("bank-logic");
+		entityManager=entityManagerFactory.createEntityManager();
 	}
-
+	
 	@AfterEach
-	void afterEach() {
-		entityManagerFactory.close();
-		entityManager.close();
-
+	void after(){
+	 entityManager.close();
+	 entityManagerFactory.close();		
 	}
-
+	
 	@Test
 	@DisplayName("save")
 	void aTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		Cliente cliente = entityManager.find(Cliente.class, clieId);
-		assertNull(cliente, "Cliente con Id:" + clieId + " ya existe");
-		cliente = new Cliente();
-		cliente.setActivo("S");
-		cliente.setClieId(clieId);
-		cliente.setEmail("j@gmail.com");
-		cliente.setDireccion("uni san buenaventura");
-		cliente.setNombre("Fiayiño");
-		cliente.setTelefono("32756756751");
-
-		TipoDocumento tipoDocumento = entityManager.find(TipoDocumento.class, 1L);
-		assertNotNull(tipoDocumento, "Tipo documento no existe");
-		cliente.setTipoDocumento(tipoDocumento);
-		entityManager.getTransaction().begin();
-		entityManager.persist(cliente);
-		entityManager.getTransaction().commit();
-		
+	   assertNotNull(entityManager,"El entityManager es nulo");
+	   Cliente cliente=entityManager.find(Cliente.class, clieId);
+	   assertNull(cliente,"El cliente con id:"+clieId+"Ya existe");
+	   
+	   cliente= new Cliente();
+	   cliente.setActivo("S");
+	   cliente.setClieId(clieId);
+	   cliente.setDireccion("Avenida Siempre Viva 123");
+	   cliente.setEmail("prueba@gmail.com");
+	   cliente.setNombre("Max Power");
+	   cliente.setTelefono("2332534");
+	   
+	   TipoDocumento tipoDocumento=entityManager.find(TipoDocumento.class,1L);
+	   assertNotNull(tipoDocumento,"El tipo de documento con id:1 no existe");
+	   cliente.setTipoDocumento(tipoDocumento);
+	   
+	   
+	   entityManager.getTransaction().begin();
+	   entityManager.persist(cliente);
+	   entityManager.getTransaction().commit();
+	   
 	}
-
+	
 	@Test
-	@DisplayName("finById")
+	@DisplayName("findById")
 	void bTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		Cliente cliente = entityManager.find(Cliente.class, clieId);
-		assertNotNull(cliente, "Cliente con Id:" + clieId + " No existe");
-
-	}
-
+	   assertNotNull(entityManager,"El entityManager es nulo");
+	   Cliente cliente=entityManager.find(Cliente.class, clieId);
+	   assertNotNull(cliente,"El cliente con id:"+clieId+"No existe");
+   
+	}	
+	
+	
 	@Test
 	@DisplayName("update")
 	void cTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		Cliente cliente = entityManager.find(Cliente.class, clieId);
-		assertNotNull(cliente, "Cliente con Id:" + clieId + " No existe");
-
-		cliente.setActivo("N");
-
-		entityManager.getTransaction().begin();
-		entityManager.merge(cliente);
-		entityManager.getTransaction().commit();
-		
-
-	}
-
+	   assertNotNull(entityManager,"El entityManager es nulo");
+	   Cliente cliente=entityManager.find(Cliente.class, clieId);
+	   assertNotNull(cliente,"El cliente con id:"+clieId+"No existe");
+	   
+	   cliente.setActivo("N");
+	   
+	   entityManager.getTransaction().begin();
+	   entityManager.merge(cliente);
+	   entityManager.getTransaction().commit();	   
+	}	
+	
 	@Test
 	@DisplayName("delete")
 	void dTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		Cliente cliente = entityManager.find(Cliente.class, clieId);
-		assertNotNull(cliente, "Cliente con Id:" + clieId + " No existe");
-
-		entityManager.getTransaction().begin();
-		entityManager.remove(cliente);
-		entityManager.getTransaction().commit();
-		
-
-	}
+	   assertNotNull(entityManager,"El entityManager es nulo");
+	   Cliente cliente=entityManager.find(Cliente.class, clieId);
+	   assertNotNull(cliente,"El cliente con id:"+clieId+"No existe");
+	   
+	   entityManager.getTransaction().begin();
+	   entityManager.remove(cliente);
+	   entityManager.getTransaction().commit();	   
+	}	
 	
-
-	
+	private final static Logger log=LoggerFactory.getLogger(ClienteJpaTest.class);
 	
 	@Test
-	@DisplayName("list")
+	@DisplayName("findAll")
 	void eTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		String jpql= "SELECT cli FROM Cliente cli";
-		Query query= entityManager.createQuery(jpql);
-		List<Cliente> losClientes=query.getResultList();
-		assertNotNull(losClientes);
-		assertFalse(losClientes.isEmpty());
-		
-     	for (Cliente cliente : losClientes) {
-     		log.info(cliente.getNombre());
-			
-		}
-     	
-     	losClientes.forEach(cliente->{
-     		log.info(cliente.getClieId().toString());     		
-     	});
+	   assertNotNull(entityManager,"El entityManager es nulo");
+       String jpql="SELECT cli FROM Cliente cli";
+       Query query=entityManager.createQuery(jpql);
+       List<Cliente> Clientes=query.getResultList();
+       assertNotNull(Clientes);
+       assertFalse(Clientes.isEmpty());
+       
+       Clientes.forEach(cliente->{
+         log.info(cliente.getNombre());
+       });
 	}
+       
+      
+			
+}	
 
-}

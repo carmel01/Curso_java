@@ -1,19 +1,22 @@
 package co.edu.usbcali.bank.service;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.usbcali.bank.domain.Cliente;
 import co.edu.usbcali.bank.repository.TipoDocumentoRepository;
@@ -22,93 +25,92 @@ import co.edu.usbcali.bank.repository.TipoDocumentoRepository;
 @Rollback(false)
 class ClienteServiceTest {
 
-	private final static Long clieId = 4560L;
+	private final static Long clieId = 452620L;
 
 	@Autowired
 	ClienteService clienteService;
 
 	@Autowired
-	TipoDocumentoRepository documentoRepository;
+	TipoDocumentoRepository tipoDocumentoRepository;
 
-	private final static Logger log=LoggerFactory.getLogger(ClienteServiceTest.class);
 	@Test
 	@DisplayName("save")
-	void aTest() {
-		
+	void atest() {
 		assertNotNull(clienteService);
-		assertNotNull(documentoRepository);
+		assertNotNull(tipoDocumentoRepository);
 
 		Cliente cliente = new Cliente();
 		cliente.setActivo("S");
 		cliente.setClieId(clieId);
-		cliente.setEmail("j@gmail.com");
-		cliente.setDireccion("uni san buenaventura");
-		cliente.setNombre("Fiayi�o");
-		cliente.setTelefono("321255552");
-		assertTrue(documentoRepository.findById(1L).isPresent(), "el tipo de documento no existe");
-		cliente.setTipoDocumento(documentoRepository.findById(1L).get());
-		
+		cliente.setDireccion("Avenida siempre viva 123");
+		cliente.setEmail("homeroJSimpsson@gmail.com");
+		cliente.setNombre("Homero J Simpson");
+		cliente.setTelefono("555 555 5552");
+
+		assertTrue(tipoDocumentoRepository.findById(1L).isPresent(), "El tipo documento no existe");
+
+		cliente.setTipoDocumento(tipoDocumentoRepository.findById(1L).get());
+
 		try {
 			clienteService.save(cliente);
-			
 		} catch (Exception e) {
-			assertNull(e,e.getMessage());
+			assertNull(e, e.getMessage());
 		}
-
 	}
-	
+
+	@Test
+	@DisplayName("findById")
+	void bTest() {
+		assertNotNull(clienteService, "clienteService es nulo");
+		Optional<Cliente> clienteOptional = clienteService.findById(clieId);
+		assertTrue(clienteOptional.isPresent());
+	}
+
 	@Test
 	@DisplayName("update")
+	@Transactional
 	void cTest() {
+		assertNotNull(clienteService, "clienteService es nulo");
+		Optional<Cliente> clienteOptional = clienteService.findById(clieId);
+		assertTrue(clienteOptional.isPresent(), "el cliente no existe");
 
-	
-		assertNotNull(clienteService,"El clienteService es nulo");
-		assertTrue(clienteService.findById(clieId).isPresent());
-
-		Cliente cliente = clienteService.findById(clieId).get();
+		Cliente cliente = clienteOptional.get();
 		cliente.setActivo("N");
-		
+
 		try {
 			clienteService.update(cliente);
-			
 		} catch (Exception e) {
-			assertNull(e,e.getMessage());
+			assertNull(e, e.getMessage());
 		}
 
-		
 	}
 
 	@Test
 	@DisplayName("delete")
 	void dTest() {
+		assertNotNull(clienteService, "clienteService es nulo");
+		Optional<Cliente> clienteOptional = clienteService.findById(clieId);
+		assertTrue(clienteOptional.isPresent(), "el cliente no existe");
 
-		assertNotNull(clienteService,"El clienteService es nulo");
-		assertTrue(clienteService.findById(clieId).isPresent());
-
-		Cliente cliente = clienteService.findById(clieId).get();
-	
-		
+		Cliente cliente = clienteOptional.get();
 		try {
 			clienteService.delete(cliente);
-			
 		} catch (Exception e) {
-			assertNull(e,e.getMessage());
+			assertNull(e, e.getMessage());
 		}
+
 	}
-	
+
+	private final static Logger log = LoggerFactory.getLogger(ClienteServiceTest.class);
+
 	@Test
 	@DisplayName("findByNombre")
-	void eTest() {
-
-		assertNotNull(clienteService,"El clienteService es nulo");
-		
-		List<Cliente> clientes=clienteService.findByNombre("Karole Dunge");
-		
-		assertNotNull(clientes,"nulo en los clientes");
-		
-		assertFalse(clientes.isEmpty(),"No hay clientes para mostrar con ese nombre");
-		
-		for (Cliente cliente : clientes) {
+	void findByNombre() {
+		assertNotNull(clienteService, "clienteService es nulo");
+		List<Cliente> losClientes = clienteService.findByNombre("Jerrie Cannell");
+		assertNotNull(losClientes);
+		assertFalse(losClientes.isEmpty());
+		for (Cliente cliente: losClientes) {
 			log.info("Id: "+cliente.getClieId());
 			log.info("Nombre: "+cliente.getNombre());
 		}
@@ -116,20 +118,16 @@ class ClienteServiceTest {
 	
 	@Test
 	@DisplayName("findByNombreLike")
-	void fTest() {
-
-		assertNotNull(clienteService,"El clienteService es nulo");
-		
-		List<Cliente> clientes=clienteService.findByNombreLike("Kar%");
-		
-		assertNotNull(clientes,"nulo en los clientes");
-		
-		assertFalse(clientes.isEmpty(),"No hay clientes para mostrar con ese nombre");
-		
-		for (Cliente cliente : clientes) {
+	void findByNombreLike() {
+		assertNotNull(clienteService, "clienteService es nulo");
+		List<Cliente> losClientes = clienteService.findByNombreLike("%ere%");
+		assertNotNull(losClientes);
+		assertFalse(losClientes.isEmpty());
+		for (Cliente cliente: losClientes) {
 			log.info("Id: "+cliente.getClieId());
 			log.info("Nombre: "+cliente.getNombre());
 		}
 	}
+
 
 }

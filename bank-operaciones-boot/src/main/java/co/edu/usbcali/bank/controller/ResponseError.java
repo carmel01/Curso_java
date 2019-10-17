@@ -1,8 +1,8 @@
-package co.edu.usbcali.bank.response;
+package co.edu.usbcali.bank.controller;
 
 public class ResponseError {
-
 	private Integer code;
+
 	private String message;
 
 	public ResponseError() {

@@ -1,21 +1,37 @@
 package co.edu.usbcali.bank.dto;
 
+import java.sql.Timestamp;
+
 public class ClienteDTO {
 
-	private Long ClieId;
+	private Long clieId;
+
 	private String activo;
+
 	private String direccion;
+
 	private String email;
+
+	private Timestamp fechaCreacion;
+
+	private Timestamp fechaModificacion;
+
 	private String nombre;
+
 	private String telefono;
+
+	private String usuCreador;
+
+	private String usuModificador;
+
 	private Long tdocId;
 
 	public Long getClieId() {
-		return ClieId;
+		return clieId;
 	}
 
 	public void setClieId(Long clieId) {
-		ClieId = clieId;
+		this.clieId = clieId;
 	}
 
 	public String getActivo() {
@@ -42,6 +58,22 @@ public class ClienteDTO {
 		this.email = email;
 	}
 
+	public Timestamp getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(Timestamp fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public Timestamp getFechaModificacion() {
+		return fechaModificacion;
+	}
+
+	public void setFechaModificacion(Timestamp fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
+	}
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -56,6 +88,22 @@ public class ClienteDTO {
 
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
+	}
+
+	public String getUsuCreador() {
+		return usuCreador;
+	}
+
+	public void setUsuCreador(String usuCreador) {
+		this.usuCreador = usuCreador;
+	}
+
+	public String getUsuModificador() {
+		return usuModificador;
+	}
+
+	public void setUsuModificador(String usuModificador) {
+		this.usuModificador = usuModificador;
 	}
 
 	public Long getTdocId() {

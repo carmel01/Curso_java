@@ -3,6 +3,9 @@ package co.edu.usbcali.bank.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.criterion.LogicalExpression;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,67 +20,79 @@ import org.springframework.web.bind.annotation.RestController;
 import co.edu.usbcali.bank.domain.Cliente;
 import co.edu.usbcali.bank.dto.ClienteDTO;
 import co.edu.usbcali.bank.mapper.ClienteMapper;
-import co.edu.usbcali.bank.response.ResponseError;
-import co.edu.usbcali.bank.service.ClienteService;
+import co.edu.usbcali.bank.service.ClientService;
 
 @RestController
 @RequestMapping("/cliente")
 public class ClienteController {
-
-	@Autowired
-	ClienteService clienteService;
-
-	@Autowired
-	ClienteMapper clienteMapper;
-
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") Long id) {
-		try {
-			clienteService.deleteById(id);
-			return ResponseEntity.ok().body("");
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new ResponseError(400, ""));
+	    
+	    private final static Logger log=LoggerFactory.getLogger(ClienteController.class);
+	
+	    @Autowired 
+	    ClientService clienteService;
+	    
+	    @Autowired
+	    ClienteMapper clienteMapper;
+	    
+	    @PostMapping("/save")
+	    public ResponseEntity<?> save(@RequestBody ClienteDTO clienteDTO)
+	    {
+	    	try {
+				Cliente cliente=clienteMapper.clienteDTOtoCliente(clienteDTO);
+				cliente=clienteService.save(cliente);
+	    		clienteDTO= clienteMapper.clienteToClienteDTO(cliente);
+				return ResponseEntity.ok().body(clienteDTO);
+			} catch (Exception e) {
+				return ResponseEntity.badRequest().body(new ResponseError(400, e.getMessage()));
+			}
+	    	
+	    }
+	    
+	    @PutMapping("/update")
+	    public  ResponseEntity<?>  update(@RequestBody ClienteDTO clienteDTO)
+	    {
+	    	try {
+	    		Cliente cliente=clienteMapper.clienteDTOtoCliente(clienteDTO);
+	    		cliente=clienteService.update(cliente);
+	    		clienteDTO= clienteMapper.clienteToClienteDTO(cliente);
+				return ResponseEntity.ok().body(clienteDTO);
+			} catch (Exception e) {
+				log.error(e.getMessage());
+				return ResponseEntity.badRequest().body(new ResponseError(400, e.getMessage()));
+			}
+	    	
+	    }	   
+	    
+	    @DeleteMapping("/delete/{id}")
+	    public ResponseEntity<?> delete(@PathVariable("id") Long id)
+	    {    	
+	    	try {
+				clienteService.deleteById(id);
+				return ResponseEntity.ok("");
+			} catch (Exception e) {
+				log.error(e.getMessage());
+				return ResponseEntity.badRequest().body(new ResponseError(400, e.getMessage()));
+			}     	
+	    }	    
+	    
+		@GetMapping("/findById/{id}")
+		public ClienteDTO findById(@PathVariable("id")Long id) {
+			Optional<Cliente> clienteOptional=clienteService.findById(id);
+			if(clienteOptional.isPresent()==false)
+			{
+				return null;
+			}
+			
+			Cliente cliente=clienteOptional.get();
+			return clienteMapper.clienteToClienteDTO(cliente);
 		}
-	}
-
-	@PutMapping("/update")
-	public ResponseEntity<?> update(@RequestBody ClienteDTO clienteDTO) {
-		try {
-			Cliente cliente = clienteMapper.clienteDTOtoCliente(clienteDTO);
-			cliente = clienteService.update(cliente);
-			clienteDTO = clienteMapper.clienteToClienteDTO(cliente);
-			return ResponseEntity.ok().body(clienteDTO);
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new ResponseError(400, e.getMessage()));
+		
+		@GetMapping("/findAll")
+		public List<ClienteDTO> findAll(){
+		   List<Cliente> listaClientes=clienteService.findAll();
+		   List<ClienteDTO> listaClientesDTO=clienteMapper.toClientesDTO(listaClientes);
+		   return listaClientesDTO;
 		}
-	}
 
-	@PostMapping("/save")
-	public ResponseEntity<?> save(@RequestBody ClienteDTO clienteDTO) {
-		try {
-			Cliente cliente = clienteMapper.clienteDTOtoCliente(clienteDTO);
-			cliente = clienteService.save(cliente);
-			clienteDTO = clienteMapper.clienteToClienteDTO(cliente);
-			return ResponseEntity.ok().body(clienteDTO);
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(new ResponseError(400, e.getMessage()));
-		}
-	}
 
-	@GetMapping("/findById/{id}")
-	public ClienteDTO findById(@PathVariable("id") Long id) {
-		Optional<Cliente> clienteOptional = clienteService.findById(id);
-		if (clienteOptional.isPresent() == false) {
-			return null;
-		}
-		Cliente cliente = clienteOptional.get();
-		return clienteMapper.clienteToClienteDTO(cliente);
-	}
-
-	@GetMapping("/findAll")
-	public List<ClienteDTO> findAll() {
-		List<Cliente> listaClientes = clienteService.findAll();
-		List<ClienteDTO> listaClientesDTO = clienteMapper.toClientesDTO(listaClientes);
-		return listaClientesDTO;
-	}
 }

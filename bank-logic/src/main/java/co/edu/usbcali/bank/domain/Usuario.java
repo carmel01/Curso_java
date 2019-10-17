@@ -21,14 +21,15 @@ public class Usuario implements Serializable {
 
 	@Id
 	@Column(name="usu_usuario")
-	@Size(min = 5, max = 10)
-	@NotNull
+	@NotNull	
 	private String usuUsuario;
 
-	@Size(min = 1,max=1)
-	private String activo;
-
 	@NotNull
+	@Size(min = 1, max = 1)	
+	private String activo;
+	
+	@NotNull
+	@Size(min = 5, max = 50)
 	private String clave;
 
 	@Column(name="fecha_creacion")
@@ -39,8 +40,9 @@ public class Usuario implements Serializable {
 
 	@NotNull
 	private BigDecimal identificacion;
-	
-	@Size(min = 5, max = 20)
+
+	@NotNull
+	@Size(min = 8, max = 100)
 	private String nombre;
 
 	@Column(name="usu_creador")
@@ -56,6 +58,7 @@ public class Usuario implements Serializable {
 	//bi-directional many-to-one association to TipoUsuario
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="tius_id")
+	@NotNull
 	private TipoUsuario tipoUsuario;
 
 	public Usuario() {

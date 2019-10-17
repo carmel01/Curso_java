@@ -1,10 +1,10 @@
 package co.edu.usbcali.bank.jpa;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -24,114 +24,104 @@ import co.edu.usbcali.bank.domain.TipoDocumento;
 import co.edu.usbcali.bank.domain.TipoUsuario;
 import co.edu.usbcali.bank.domain.Usuario;
 
-class UsuarioJPATest {
-
-	private final static String usu_usuario = "jfiayo";
-	private final static Logger log=LoggerFactory.getLogger(UsuarioJPATest.class);
+class UsuarioJpaTest {
 	
-	EntityManagerFactory entityManagerFactory = null;
-	EntityManager entityManager = null;
+	private final static String usuUsuario="MAXPOWER";
 
+	EntityManagerFactory entityManagerFactory=null;
+	EntityManager entityManager=null;
+	
 	@BeforeEach
-	void beforeEach() {
-		entityManagerFactory = Persistence.createEntityManagerFactory("bank-logic");
-		entityManager = entityManagerFactory.createEntityManager();
-
+	void beforeEach(){
+		entityManagerFactory=Persistence.createEntityManagerFactory("bank-logic");
+		entityManager=entityManagerFactory.createEntityManager();
 	}
-
+	
 	@AfterEach
-	void afterEach() {
-		entityManagerFactory.close();
-		entityManager.close();
-
+	void after(){
+	 entityManager.close();
+	 entityManagerFactory.close();		
 	}
-
+	
+	Timestamp fechaActual;
+	
 	@Test
 	@DisplayName("save")
 	void aTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		Usuario usuario= entityManager.find(Usuario.class, usu_usuario);
-		assertNull(usuario, "Usuario con Id:" + usu_usuario + " ya existe");
-		usuario = new Usuario();
-		usuario.setActivo("S");
-		usuario.setClave("jfiayo");
-		usuario.setNombre("Fiayiño");
-		usuario.setUsuUsuario(usu_usuario);
-		usuario.setIdentificacion(new BigDecimal(12345));
-		TipoUsuario tipoUsuario = entityManager.find(TipoUsuario.class, 1L);
-		assertNotNull(tipoUsuario, "Tipo usuario no existe");
-		usuario.setTipoUsuario(tipoUsuario);
-		entityManager.getTransaction().begin();
-		entityManager.persist(usuario);
-		entityManager.getTransaction().commit();
 		
+	   assertNotNull(entityManager,"El entityManager es nulo");
+	   Usuario usuario=entityManager.find(Usuario.class, usuUsuario);
+	   assertNull(usuario,"El usuario con id:"+usuUsuario+"Ya existe");
+	   
+	   usuario= new Usuario();
+	   usuario.setActivo("S");
+	   usuario.setClave("admin123");
+	   usuario.setIdentificacion(new BigDecimal(8875));
+	   usuario.setNombre("Max Power");
+	   TipoUsuario tipoUsuario=entityManager.find(TipoUsuario.class,1L);   
+	   usuario.setTipoUsuario(tipoUsuario);	  
+	   usuario.setFechaCreacion(fechaActual);
+	   usuario.setUsuUsuario(usuUsuario);
+	   
+	   
+	   entityManager.getTransaction().begin();
+	   entityManager.persist(usuario);
+	   entityManager.getTransaction().commit();
+	   
 	}
+	
 	@Test
-	@DisplayName("finById")
+	@DisplayName("findById")
 	void bTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		Usuario usuario= entityManager.find(Usuario.class, usu_usuario);
-		assertNotNull(usuario, "Usiario con Id:" + usu_usuario + " No existe");
-
-	}
-
+	   assertNotNull(entityManager,"El entityManager es nulo");
+	   Usuario usuario=entityManager.find(Usuario.class, usuUsuario);
+	   assertNotNull(usuario,"El cliente con id:"+usuUsuario+"No existe");   
+	}	
+	
 	@Test
 	@DisplayName("update")
 	void cTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		Usuario usuario= entityManager.find(Usuario.class, usu_usuario);
-		assertNotNull(usuario, "Usuario con Id:" + usu_usuario + " No existe");
-
-		usuario.setActivo("N");
-
-		entityManager.getTransaction().begin();
-		entityManager.merge(usuario);
-		entityManager.getTransaction().commit();
-		
-
-	}
-
+	   assertNotNull(entityManager,"El entityManager es nulo");
+	   Usuario usuario=entityManager.find(Usuario.class, usuUsuario);
+	   assertNotNull(usuario,"El cliente con id:"+usuUsuario+"No existe");
+	   
+	   usuario.setActivo("N");
+	   usuario.setFechaModificacion(fechaActual);
+	   
+	   entityManager.getTransaction().begin();
+	   entityManager.merge(usuario);
+	   entityManager.getTransaction().commit();	   
+	}	
+	
 	@Test
 	@DisplayName("delete")
 	void dTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		Usuario usuario= entityManager.find(Usuario.class, usu_usuario);
-		assertNotNull(usuario, "Usuario con Id:" + usu_usuario + " No existe");
-
-		entityManager.getTransaction().begin();
-		entityManager.remove(usuario);
-		entityManager.getTransaction().commit();
-		
-
-	}
+	   assertNotNull(entityManager,"El entityManager es nulo");
+	   Usuario usuario=entityManager.find(Usuario.class, usuUsuario);
+	   assertNotNull(usuario,"El cliente con id:"+usuUsuario+"No existe");
+	   
+	   entityManager.getTransaction().begin();
+	   entityManager.remove(usuario);
+	   entityManager.getTransaction().commit();	   
+	}	
 	
-
-	
+	private final static Logger log=LoggerFactory.getLogger(ClienteJpaTest.class);
 	
 	@Test
-	@DisplayName("list")
+	@DisplayName("findAll")
 	void eTest() {
-
-		assertNotNull(entityManager, "EL entityManager NULL");
-		String jpql= "SELECT usu FROM Usuario usu";
-		Query query= entityManager.createQuery(jpql);
-		List<Usuario> losUsuarios=query.getResultList();
-		assertNotNull(losUsuarios);
-		assertFalse(losUsuarios.isEmpty());
+	   assertNotNull(entityManager,"El entityManager es nulo");
+       String jpql="SELECT usu FROM Usuario usu";
+       Query query=entityManager.createQuery(jpql);
+       List<Usuario> Usuarios=query.getResultList();
+       assertNotNull(Usuarios);
+       assertFalse(Usuarios.isEmpty());
+       
+       Usuarios.forEach(usuario->{
+         log.info(usuario.getNombre());
+       });
+	}	
 		
-     	for (Usuario usuario : losUsuarios) {
-     		log.info(usuario.getNombre());
-			
-		}
-     	
-     	losUsuarios.forEach(usuario->{
-     		log.info(usuario.getIdentificacion().toString());     		
-     	});
-	}
-
+	
 
 }
