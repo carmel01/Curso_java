@@ -1,0 +1,26 @@
+<div *ngIf="showMsg">
+    {{msg}}
+</div>
+<form #clienteForm="ngForm">
+
+    <input [(ngModel)]="cliente.clieId"     #clieId     name="clieId"       id="clieId"     type="text" placeholder="ID"/><br/>
+
+    <select [(ngModel)]="cliente.tdocId" #tdocId name="tdocId" id="tdocId">
+        <option *ngFor="let tipoDocumento of listaTipoDocumento" [value]="tipoDocumento.tdocId">
+            {{tipoDocumento.tdocId}} {{tipoDocumento.nombre}}
+        </option>
+    </select><br/>
+
+    <input [(ngModel)]="cliente.nombre"     #nombre     name="nombre"       id="nombre"     type="text" placeholder="nombre"/><br/>
+    <input [(ngModel)]="cliente.direccion"  #direccion  name="direccion"    id="direccion"  type="text" placeholder="dirección"/><br/>
+    <input [(ngModel)]="cliente.telefono"   #telefono   name="telefono"     id="telefono"   type="text" placeholder="teléfono"/><br/>
+    <input [(ngModel)]="cliente.email"      #email      name="email"        id="email"      type="text" placeholder="email"/><br/>
+
+    <select [(ngModel)]="cliente.activo" #activo name="activo" id="activo">
+            <option *ngFor="let activo of listaActivo" [value]="activo.id">
+                {{activo.id}} {{activo.nombre}}
+            </option>
+        </select><br/>
+
+        <button (click)="save()">Grabando cliente por fin!</button>
+</form>
